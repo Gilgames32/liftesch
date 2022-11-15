@@ -25,17 +25,20 @@ typedef struct elvono
 
     // var
     int floor;
-    bool todo[20];
+    bool todo_from[20]; //ahonnan kell felvenni
+    bool todo_to[20];   //ahová kell letenni
     liftstate state;
     int direction; //-1 le, 0 idle, 1 fel
 
+    // passengers
     utastomb inside;
 
     // graf
     vector pos;
-    double animy; // for smooth anims
-    double animb; // boarding animation smoother
-    bool animf;   // nyíl flip
+    double anim_y;      // for smooth anims
+    bool anim_pre;      // check if its pre or past the snapline
+    double anim_board;  // boarding animation smoother
+    bool anim_flip;     // nyíl flip
 } elvono;
 
 

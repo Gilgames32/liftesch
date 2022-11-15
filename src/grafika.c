@@ -115,7 +115,7 @@ void drawlift(SDL_Renderer *renderer, elvono lift, SDL_Texture *nyiltexture)
 
     if (lift.state == LIFTBOARDING)
     {
-        drawnyil(renderer, nyiltexture, (int)lift.animb, (vector){lift.pos.x+16, lift.pos.y-4}, lift.animf);
+        drawnyil(renderer, nyiltexture, (int)lift.anim_board, (vector){lift.pos.x+16, lift.pos.y-4}, lift.anim_flip);
     }
     
 }

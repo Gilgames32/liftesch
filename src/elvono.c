@@ -30,16 +30,25 @@ int main(int argc, char *argv[])
     // ui components
     SDL_Rect emberrect = {700, 300, NBERX, NBERY};
 
-    // liftek
+    // liftek init
     elvono liftek[4] = {0};
     for (int i = 0; i < 4; i++)
     {
         elvono *l = liftek + i;
         l->id = 'A' + i;
+        l->maxppl = i < 2 ? 3 : 21; // A és B liftek 13 fősek, C és D 21
+
         l->floor = 0;
+        // todo empty
         l->state = LIFTIDLE;
+        l->direction = 0;
+
+        // inside empty
+
         l->pos = (vector){mat_liftx(i), mat_szinty(l->floor) - 16};
-        l->animy = (double)l->pos.y;
+        l->anim_y = (double)l->pos.y;
+        l->anim_board = 0;
+        l->anim_flip = false;
     }
 
     // szintek liftajtó:szint, miért? mert így kevesebbet kell szarakodni, A = 0
@@ -49,7 +58,7 @@ int main(int argc, char *argv[])
     varolistaelem *varokeleje = fajlbol();
     int varoktimer = 0;
 
-    // ezekből lehet uint kéne
+    // ezekből lehet uint kéne?
     int prev = SDL_GetTicks(), curr = SDL_GetTicks(), deltatime = 0;
     SDL_Event event;
     bool update = true;
@@ -96,7 +105,7 @@ int main(int argc, char *argv[])
                         temputas.dir = temputas.to > temputas.from ? 1 : -1;
                         printf("%d. szint %d\n", temputas.from, temputas.to);
                         utastomb_append(&(szintek[0][temputas.from+1]), temputas);
-                        liftek[0].todo[temputas.from + 1] = true;
+                        liftek[0].todo_from[temputas.from + 1] = true;
                         deltatime = 0;
                         curr = prev;
                     }
@@ -137,7 +146,7 @@ int main(int argc, char *argv[])
                 //todo: implement the liftpick here too
                 utas temputas = varokeleje->adat.varo;
                 utastomb_append(&(szintek[0][temputas.from+1]), temputas);
-                liftek[0].todo[temputas.from + 1] = true;
+                liftek[0].todo_from[temputas.from + 1] = true;
 
                 varoktimer -= varokeleje->adat.varoido;
                 varolista_firstremove(&varokeleje);
