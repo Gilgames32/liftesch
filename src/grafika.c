@@ -108,7 +108,7 @@ void drawlift(SDL_Renderer *renderer, elvono lift, SDL_Texture *nyiltexture)
     liftbox.rect.x -= liftbox.rect.w / 2;
     liftbox.rect.y -= liftbox.rect.h / 2;
     drawbox(renderer, liftbox);
-    lineColor(renderer, liftbox.rect.x + liftbox.rect.w / 2, liftbox.rect.y, liftbox.rect.x + liftbox.rect.w / 2, 16, FEHER25);
+    lineColor(renderer, liftbox.rect.x + liftbox.rect.w / 2, liftbox.rect.y, liftbox.rect.x + liftbox.rect.w / 2, SCHY1, FEHER25);
     char tmpstr[3]; // 2 char + '\0'
     sprintf(tmpstr, "%2d", lift.floor);
     stringColor(renderer, liftbox.rect.x+2, liftbox.rect.y+2, tmpstr, lift.state==LIFTBOARDING ? FEHER : FEKETE);
