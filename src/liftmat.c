@@ -63,18 +63,18 @@ vector vectorscale(vector v, double w, double h)
 
 
 // indexként térít vissza, nem szintként!
-int todo_min(bool todo_from[], bool todo_to[]){
+int todo_min(bool todo_to[], bool todo_from[], bool fisrtonly){
     for (int i = 0; i < 20; i++)
-    if (todo_from[i] || todo_to[i])
+    if (todo_to[i] || (todo_from[i] && !fisrtonly))
             return i;
 
     return -128;
 }
 
 // indexként térít vissza, nem szintként!
-int todo_max(bool todo_from[], bool todo_to[]){
+int todo_max(bool todo_to[], bool todo_from[], bool fisrtonly){
     for (int i = 20-1; i >= 0; i--)
-    if (todo_from[i] || todo_to[i])
+    if (todo_to[i] || (todo_from[i] && !fisrtonly))
         return i;
 
     return -128;
@@ -151,7 +151,7 @@ bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint
         }
 
         //mozgatás
-        l->anim_y -= (double)deltatime/10 * l->direction;
+        l->anim_y -= (double)deltatime/1 * l->direction;
         l->pos.y = (int)l->anim_y;
 
         break;
@@ -170,7 +170,7 @@ bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint
             l->state = LIFTIDLE;
             l->todo_from[l->floor+1] = false;
             l->todo_to[l->floor+1] = false;
-            printf("backtoidle\n");
+            printf("backtoidle %d\n", SDL_GetTicks());
             break;
         }
 
@@ -183,7 +183,7 @@ bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint
         }
 
         //nyíl anim apply
-        l->anim_board += (double)deltatime/5;
+        l->anim_board += (double)deltatime/1;
         l->anim_flip = *vankiszallo;
 
         //1 cycle
@@ -245,9 +245,10 @@ bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint
             {
                 // ha felfele dir de ez a legfelső pont vagy
                 // ha lefele dir de ez a legalsó pont
-                if (l->direction == +1 && l->floor+1 >= todo_max(l->todo_from, l->todo_to))
+                // this is a terrible way of doing this
+                if (l->floor == 18 || l->direction == +1 && l->floor+1 >= todo_max(l->todo_to, l->todo_from, l->inside.meret >= l->maxppl))
                     l->direction = -1;
-                if (l->direction == -1 && l->floor+1 <= todo_min(l->todo_from, l->todo_to))
+                if (l->floor == -1 || l->direction == -1 && l->floor+1 <= todo_min(l->todo_to, l->todo_from, l->inside.meret >= l->maxppl))
                     l->direction = +1;
 
                 // és elindul
