@@ -80,11 +80,6 @@ int todo_max(bool todo_to[], bool todo_from[], bool fisrtonly){
     return -128;
 }
 
-int picklift(utas temputas, elvono liftek[], utas szintek[][20])
-{
-    return 0;
-}
-
 bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint[]){
     bool update = false;
     switch (l->state)
@@ -266,4 +261,9 @@ bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint
     }
 
     return update;
+}
+
+int picklift(utas temputas, elvono liftek[], utas szintek[][20])
+{
+    return rand() % 4;
 }

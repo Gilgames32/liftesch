@@ -104,8 +104,9 @@ int main(int argc, char *argv[])
                         temputas.to = toszint;
                         temputas.dir = temputas.to > temputas.from ? 1 : -1;
                         printf("%d. szint %d\n", temputas.from, temputas.to);
-                        utastomb_append(&(szintek[0][temputas.from+1]), temputas);
-                        liftek[0].todo_from[temputas.from + 1] = true;
+                        int pickedlift = picklift(temputas, liftek, szintek);
+                        utastomb_append(&(szintek[pickedlift][temputas.from+1]), temputas);
+                        liftek[pickedlift].todo_from[temputas.from + 1] = true;
                         deltatime = 0;
                         curr = prev;
                     }
@@ -145,8 +146,9 @@ int main(int argc, char *argv[])
                 //be a szintre
                 //todo: implement the liftpick here too
                 utas temputas = varokeleje->adat.varo;
-                utastomb_append(&(szintek[0][temputas.from+1]), temputas);
-                liftek[0].todo_from[temputas.from + 1] = true;
+                int pickedlift = picklift(temputas, liftek, szintek);
+                utastomb_append(&(szintek[pickedlift][temputas.from+1]), temputas);
+                liftek[pickedlift].todo_from[temputas.from + 1] = true;
 
                 varoktimer -= varokeleje->adat.varoido;
                 varolista_firstremove(&varokeleje);
@@ -164,10 +166,12 @@ int main(int argc, char *argv[])
             ablak_cls(renderer);
 
             // liftek, egyelőre csak egyet renderel
-            for (int lifti = 0; lifti < 1; lifti++)
+            for (int lifti = 0; lifti < 4; lifti++)
             {
                 elvono *l = liftek + lifti;
-                update = updatelift(renderer, deltatime, l, szintek[lifti]);
+                if (updatelift(renderer, deltatime, l, szintek[lifti]))
+                    update = true;
+
                 drawlift(renderer, *l, nyiltexture);
             }
 
