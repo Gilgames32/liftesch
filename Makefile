@@ -21,10 +21,10 @@ else
 endif
 
 default: CFLAGS += -O3
-default: setupdirs Liftesch
+default: setupdirs LifteSCH
 
 debug: CFLAGS += -g
-debug: setupdirs Liftesch
+debug: setupdirs LifteSCH
 
 setupdirs:
 	$(MKDIR)
@@ -32,7 +32,7 @@ setupdirs:
 %.o: $(SRCDIR)/%.c
 	$(CC) $(CFLAGS) $(INCLUDE) -c -o $(OBJDIR)/$@ $<
 
-Liftesch: $(OBJECTS)
+LifteSCH: $(OBJECTS)
 	$(CC) $(CFLAGS) -o $(TARGET)/$@ $(addprefix $(OBJDIR)/, $^) $(LIB)
 
 clean:
