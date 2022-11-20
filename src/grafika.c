@@ -1,5 +1,6 @@
 #include "grafika.h"
 #include "adat.h"
+#include "liftmat.h"
 
 void ablak_cls(SDL_Renderer *renderer)
 {
@@ -18,7 +19,7 @@ void ablak_init(int szeles, int magas, SDL_Window **pwindow, SDL_Renderer **pren
     }
 
     // window
-    SDL_Window *window = SDL_CreateWindow("SCHLIFT", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, szeles, magas, 0);
+    SDL_Window *window = SDL_CreateWindow("LifteSCH", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, szeles, magas, 0);
     if (window == NULL)
     {
         SDL_Log("Nem hozhato letre az ablak: %s", SDL_GetError());

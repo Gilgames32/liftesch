@@ -4,6 +4,7 @@
         "sdl2_gfxprimitives.h": "c",
         "stdbool.h": "c",
         "liftmat.h": "c",
-        "fajlbe.h": "c"
+        "fajlbe.h": "c",
+        "adat.h": "c"
     }
 }
