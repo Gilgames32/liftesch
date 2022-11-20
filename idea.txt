@@ -1,47 +1,3 @@
-
-start
-    sdl ablak létrehozás
-    fájlbetöltés
-
-    
-update
-    input kezelés eventekkel
-    anim apply
-    render
-    statisztika kiírás
-
-anim
-    lift mozgatás
-
-on_ember_place
-    felugró ablak / random dest (csillaggal)
-    adott lift routeba a szint száma
-    ember a scenehez
-
-lift
-    melyik szintre megy vagy hol áll épp
-    késéssel animáció kalkuláció
-    ha !ismoving
-        idea: animált nyíl mutatja a szállás irányát
-        kiszállás
-        beszállás
-            ameddig nem éri el a max limitet
-    jelenlegi célállomás kiszámítása és indulás
-
-várólista
-    szintek
-        emberek
-            hova megy
-            most hol van (követelmény)
-            melyik lift
-            várakozási idő
-            utazási idő
-            mozgássérült?
-
-
-*időzített érkezések fájlból
-    queue
-
 statisztikák számítása
     heatmap?
 
@@ -50,12 +6,4 @@ statisztikák számítása
 hibakezelés 
     mi van ha minden lift megtelt?
 time pause
-liftes zene
 consolas font
-
-.h-k
-    grafika
-    matek
-    liftelosztás
-
-
