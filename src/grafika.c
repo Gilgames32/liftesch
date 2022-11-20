@@ -10,17 +10,27 @@ void ablak_cls(SDL_Renderer *renderer)
 
 void ablak_init(int szeles, int magas, SDL_Window **pwindow, SDL_Renderer **prenderer)
 {
+    // init
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
     {
         SDL_Log("Nem indithato az SDL: %s", SDL_GetError());
         exit(1);
     }
+
+    // window
     SDL_Window *window = SDL_CreateWindow("SCHLIFT", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, szeles, magas, 0);
     if (window == NULL)
     {
         SDL_Log("Nem hozhato letre az ablak: %s", SDL_GetError());
         exit(1);
     }
+
+    // icon
+    SDL_Surface *icon;
+    icon = IMG_Load("icon.png");
+    SDL_SetWindowIcon(window, icon);
+    SDL_FreeSurface(icon);
+
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     //SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
     if (renderer == NULL)
