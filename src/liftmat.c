@@ -80,11 +80,6 @@ int todo_max(bool todo_to[], bool todo_from[], bool fisrtonly){
     return -128;
 }
 
-int picklift(utas temputas, elvono liftek[], utas szintek[][20])
-{
-    return 0;
-}
-
 bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint[]){
     bool update = false;
     switch (l->state)
@@ -131,9 +126,9 @@ bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint
         // ha pre de már a snapvonal után van, azaz elérte
         if (l->anim_pre &&
             (
-                l->direction == +1 && l->pos.y <= mat_szinty(l->floor)-LOS
+                (l->direction == +1 && l->pos.y <= mat_szinty(l->floor)-LOS)
                 ||
-                l->direction == -1 && l->pos.y >= mat_szinty(l->floor)-LOS
+                (l->direction == -1 && l->pos.y >= mat_szinty(l->floor)-LOS)
             )
         )
         {
@@ -151,7 +146,7 @@ bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint
         }
 
         //mozgatás
-        l->anim_y -= (double)deltatime/1 * l->direction;
+        l->anim_y -= (double)deltatime/4 * l->direction;
         l->pos.y = (int)l->anim_y;
 
         break;
@@ -183,7 +178,7 @@ bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint
         }
 
         //nyíl anim apply
-        l->anim_board += (double)deltatime/1;
+        l->anim_board += (double)deltatime/2;
         l->anim_flip = *vankiszallo;
 
         //1 cycle
@@ -241,14 +236,14 @@ bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint
 
             // indulás tovább
             // ha már nincs kiszálló és vannak bent utasok, nincsenek felszállók, vagy már megtelt a fülke
-            if (!*vankiszallo && (l->inside.meret != 0 && varok->meret == 0) || l->inside.meret >= l->maxppl)
+            if ((!*vankiszallo && (l->inside.meret != 0 && varok->meret == 0)) || l->inside.meret >= l->maxppl)
             {
                 // ha felfele dir de ez a legfelső pont vagy
                 // ha lefele dir de ez a legalsó pont
                 // this is a terrible way of doing this
-                if (l->floor == 18 || l->direction == +1 && l->floor+1 >= todo_max(l->todo_to, l->todo_from, l->inside.meret >= l->maxppl))
+                if (l->floor == 18 || (l->direction == +1 && l->floor+1 >= todo_max(l->todo_to, l->todo_from, l->inside.meret >= l->maxppl)))
                     l->direction = -1;
-                if (l->floor == -1 || l->direction == -1 && l->floor+1 <= todo_min(l->todo_to, l->todo_from, l->inside.meret >= l->maxppl))
+                if (l->floor == -1 || (l->direction == -1 && l->floor+1 <= todo_min(l->todo_to, l->todo_from, l->inside.meret >= l->maxppl)))
                     l->direction = +1;
 
                 // és elindul
@@ -266,4 +261,24 @@ bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint
     }
 
     return update;
+}
+
+int picklift(utas temputas, elvono liftek[], utas szintek[][20])
+{
+    return rand()%4;
+    // összehasonlítás
+    // return minimum
+}
+
+int megeri(int from, int to, elvono l, utas szintoszlop[]){
+    // erre az emeletre mikor jön jó irányban
+    // amikor van ilyen megvizsgáljuk hogy befére (minden útbaeső szinten beférek-e)
+    // ha igen
+        // return lépésszám
+    // ha nem
+        // jön e majd ide?
+            // minden szinten beférek e?
+        // ha nem
+            // a végén jöjjön értem
+
 }

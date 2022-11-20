@@ -59,9 +59,6 @@ void varolista_firstremove(varolistaelem **eleje){
     *eleje = ujeleje;
 }
 
-
-
-
 varolistaelem* fajlbol(void) {
     FILE* fp;
     fp = fopen("erkezok.txt", "r");

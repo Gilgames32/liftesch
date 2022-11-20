@@ -4,7 +4,7 @@ OBJDIR := obj
 TARGET := output
 CFLAGS := -Wall
 LIB := -lSDL2_gfx -lSDL2_image -lSDL2_mixer -lSDL2_ttf
-OBJECTS := elvono.o grafika.o liftmat.o adat.o
+OBJECTS := adat.o liftmat.o grafika.o elvono.o
 
 # Windows
 ifdef OS

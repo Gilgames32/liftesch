@@ -29,11 +29,22 @@ typedef struct varolistaelem
     varoutas adat;
     struct varolistaelem *kov;
 } varolistaelem;
-
+/*
 void utastomb_append(utastomb *ul, utas ut);
 void utastomb_indexremove(utastomb *ul, int index);
 
 varoutas sorbe(void);
 
+void utastomb_append(utastomb *ul, utas ut);
 
+void utastomb_indexremove(utastomb *ul, int index);
+
+void varolista_free(varolistaelem **eleje);
+
+void varolista_append(varolistaelem **eleje, varoutas add);
+
+void varolista_firstremove(varolistaelem **eleje);
+
+varolistaelem *fajlbol(void);
+*/
 #endif
