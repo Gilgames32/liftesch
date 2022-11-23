@@ -17,6 +17,18 @@ enum ablak_const
     FEHER25 = 0xFFFFFF44
 };
 
+enum img_const
+{
+    NBERX = 13,
+    NBERY = 26,
+    NYILX = 18,
+    NYILY = 13,
+    TITLEX = 190,
+    TITLEY = 95,
+    FLOPPYX = 16,
+    FLOPPYY = 16
+};
+
 enum sch_const
 {
     MARGOX = 24,
@@ -33,24 +45,31 @@ enum sch_const
     LOS = 16 // liftoffset
 };
 
-enum pin_const
+
+
+enum ui_pin_const
 {
     PADDING = 16,
     CELLSIZE = 42,
-    PINX1 = 752,
-    PINY1 = 256,
-    PINW = PADDING + 3 * (CELLSIZE + PADDING),
+
+    UIX1 = 752,
+    UIY1 = PADDING*2 + TITLEY,
+    UIW = PADDING + 3 * (CELLSIZE + PADDING),
+    UIH = PADDING + 1 * (CELLSIZE + PADDING),
+    UIX2 = UIX1 + UIW,
+    UIY2 = UIY1 + UIH,
+
+    DNBX = (int)(UIX1 + PADDING + CELLSIZE*.5 - NBERX/2),
+    DNBY = (int)(UIY1 + PADDING + CELLSIZE*.5 - NBERY/2),
+    LDBTNX = UIX1 + 3 * (CELLSIZE + PADDING),
+    LDBTNY = UIY1 + 1 * (CELLSIZE + PADDING),
+
+    PINX1 = UIX1,
+    PINY1 = UIY2 + PADDING,
+    PINW = UIW,
     PINH = PADDING + 5 * (CELLSIZE + PADDING),
     PINX2 = PINX1 + PINW,
     PINY2 = PINY1 + PINH
-};
-
-enum img_const
-{
-    NBERX = 13,
-    NBERY = 26,
-    NYILX = 18,
-    NYILY = 13
 };
 
 typedef struct box

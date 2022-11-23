@@ -1,6 +1,7 @@
 #include "grafika.h"
 #include "adat.h"
 #include "liftmat.h"
+#include <SDL.h>
 
 void ablak_cls(SDL_Renderer *renderer)
 {
@@ -28,7 +29,7 @@ void ablak_init(int szeles, int magas, SDL_Window **pwindow, SDL_Renderer **pren
 
     // icon
     SDL_Surface *icon;
-    icon = IMG_Load("icon.png");
+    icon = IMG_Load("lifteschlogo.png");
     SDL_SetWindowIcon(window, icon);
     SDL_FreeSurface(icon);
 
@@ -74,7 +75,7 @@ void drawbox(SDL_Renderer *renderer, box b)
         rectangleColor(renderer, b.rect.x, b.rect.y, b.rect.x + b.rect.w, b.rect.y + b.rect.h, b.color);
 }
 
-void drawschonherz(SDL_Renderer *renderer)
+void drawschonherz(SDL_Renderer *renderer, SDL_Texture *title)
 {
     // padlók
     for (int i = -1; i <= 18; i++)
@@ -86,20 +87,31 @@ void drawschonherz(SDL_Renderer *renderer)
         char tmpstr[3]; // 2 char + '\0'
         sprintf(tmpstr, "%2d", i);
         stringColor(renderer, SCHX2 + 4, mat_szinty(i) - 16, tmpstr, FEHER);
-        // díszítés: - | / |
-        //jobb
-        lineColor(renderer, SCHX1 - MARGOX,             SCHY1 + 16,                 SCHX1 - 2*MARGOX,           SCHY1 + 16, FEHER);
-        lineColor(renderer, SCHX1 - 2*MARGOX,           SCHY1 + 16,                 SCHX1 - 2*MARGOX,           SCHY1 + 3*SCHH/4, FEHER);
-        lineColor(renderer, SCHX1 - 2*MARGOX,           SCHY1 + 3*SCHH/4,           SCHX1 - 2*MARGOX - SCHX1/2, SCHY1 + 3*SCHH/4 + SCHX1/2, FEHER);
-        lineColor(renderer, SCHX1 - 2*MARGOX - SCHX1/2, SCHY1 + 3*SCHH/4 + SCHX1/2, SCHX1 - 2*MARGOX - SCHX1/2, WINY, FEHER);
-        
-        // bal
-        lineColor(renderer, SCHX2 + MARGOX,             SCHY1 + 16,                 SCHX2 + 2*MARGOX,           SCHY1 + 16, FEHER);
-        lineColor(renderer, SCHX2 + 2*MARGOX,           SCHY1 + 16,                 SCHX2 + 2*MARGOX,           SCHY1 + 3*SCHH/4, FEHER);
-        lineColor(renderer, SCHX2 + 2*MARGOX,           SCHY1 + 3*SCHH/4,           SCHX2 + 2*MARGOX + SCHX1/2, SCHY1 + 3*SCHH/4 + SCHX1/2, FEHER);
-        lineColor(renderer, SCHX2 + 2*MARGOX + SCHX1/2, SCHY1 + 3*SCHH/4 + SCHX1/2, SCHX2 + 2*MARGOX + SCHX1/2, WINY, FEHER);
     }
+
+    // díszítés: - | / |
+    //jobb
+    lineColor(renderer, SCHX1 - MARGOX,             SCHY1 + 16,                 SCHX1 - 2*MARGOX,           SCHY1 + 16, FEHER);
+    lineColor(renderer, SCHX1 - 2*MARGOX,           SCHY1 + 16,                 SCHX1 - 2*MARGOX,           SCHY1 + 3*SCHH/4, FEHER);
+    lineColor(renderer, SCHX1 - 2*MARGOX,           SCHY1 + 3*SCHH/4,           SCHX1 - 2*MARGOX - SCHX1/2, SCHY1 + 3*SCHH/4 + SCHX1/2, FEHER);
+    lineColor(renderer, SCHX1 - 2*MARGOX - SCHX1/2, SCHY1 + 3*SCHH/4 + SCHX1/2, SCHX1 - 2*MARGOX - SCHX1/2, WINY, FEHER);
+    
+    // bal
+    lineColor(renderer, SCHX2 + MARGOX,             SCHY1 + 16,                 SCHX2 + 2*MARGOX,           SCHY1 + 16, FEHER);
+    lineColor(renderer, SCHX2 + 2*MARGOX,           SCHY1 + 16,                 SCHX2 + 2*MARGOX,           SCHY1 + 3*SCHH/4, FEHER);
+    lineColor(renderer, SCHX2 + 2*MARGOX,           SCHY1 + 3*SCHH/4,           SCHX2 + 2*MARGOX + SCHX1/2, SCHY1 + 3*SCHH/4 + SCHX1/2, FEHER);
+    lineColor(renderer, SCHX2 + 2*MARGOX + SCHX1/2, SCHY1 + 3*SCHH/4 + SCHX1/2, SCHX2 + 2*MARGOX + SCHX1/2, WINY, FEHER);
+
+    // belső téglalap
     rectangleColor(renderer, SCHX1 - MARGOX, SCHY1, SCHX2 + MARGOX, SCHY2, FEHER);
+
+    // 190x95 logo
+    SDL_Rect src = {0, 0, TITLEX, TITLEY};
+    SDL_Rect dest = {PINX1, SCHY1, TITLEX, TITLEY};
+    SDL_RenderCopy(renderer, title, &src, &dest);
+
+    // ui thingy
+    rectangleColor(renderer, UIX1, UIY1, UIX2, UIY2);
 }
 
 void drawnyil(SDL_Renderer *renderer, SDL_Texture *nyiltexture, int x, vector pos, bool flip)

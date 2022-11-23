@@ -282,3 +282,7 @@ int megeri(int from, int to, elvono l, utas szintoszlop[]){
             // a végén jöjjön értem
 
 }
+
+int simulate(int from, int to, elvono l, utas szintoszlop[]){
+    //
+}

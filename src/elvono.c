@@ -26,9 +26,11 @@ int main(int argc, char *argv[])
     // load textures
     SDL_Texture *nyiltexture = ablak_loadtexture(renderer, "nyil.png");
     SDL_Texture *embertexture = ablak_loadtexture(renderer, "nber.png");
+    SDL_Texture *titletexture = ablak_loadtexture(renderer, "lifteschtitle.png");
 
     // ui components
-    SDL_Rect emberrect = {700, 300, NBERX, NBERY};
+    SDL_Rect emberrect = {DNBX, DNBY, NBERX, NBERY};
+    button loadbutton = {(SDL_Rect){LDBTNX, LDBTNY, CELLSIZE, CELLSIZE}};
 
     // liftek init
     elvono liftek[4] = {0};
@@ -175,7 +177,7 @@ int main(int argc, char *argv[])
                 drawlift(renderer, *l, nyiltexture);
             }
 
-            drawschonherz(renderer);
+            drawschonherz(renderer, titletexture);
             drawwaitingppl(renderer, embertexture, szintek);
 
             if (drag)
@@ -192,6 +194,7 @@ int main(int argc, char *argv[])
     // cleanup memory
     SDL_DestroyTexture(embertexture);
     SDL_DestroyTexture(nyiltexture);
+    SDL_DestroyTexture(titletexture);
 
     SDL_Quit();
 
@@ -210,7 +213,7 @@ int main(int argc, char *argv[])
         free(liftek[i].inside.utasok);
     }
 
-    // maradák várólista
+    // maradék várólista
     varolista_free(&varokeleje);
 
     return 0;
