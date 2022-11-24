@@ -40,6 +40,9 @@ typedef struct elvono
     bool anim_pre;     // check if its pre or past the snapline
     double anim_board; // boarding animation smoother
     bool anim_flip;    // nyíl flip
+
+    // stats
+    avg *waitt, *travelt;
 } elvono;
 /*
 int mat_szinty(int szinti);

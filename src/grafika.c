@@ -2,6 +2,7 @@
 #include "adat.h"
 #include "liftmat.h"
 #include <SDL.h>
+#include <SDL_mixer.h>
 
 void ablak_cls(SDL_Renderer *renderer)
 {
@@ -10,12 +11,12 @@ void ablak_cls(SDL_Renderer *renderer)
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 }
 
-void ablak_init(int szeles, int magas, SDL_Window **pwindow, SDL_Renderer **prenderer)
+void ablak_init(int szeles, int magas, SDL_Window **pwindow, SDL_Renderer **prenderer, Mix_Music **pmusic)
 {
     // init
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
     {
-        SDL_Log("Nem indithato az SDL: %s", SDL_GetError());
+        SDL_Log("Nem indithato az SDL: %s\n", SDL_GetError());
         exit(1);
     }
 
@@ -23,7 +24,32 @@ void ablak_init(int szeles, int magas, SDL_Window **pwindow, SDL_Renderer **pren
     SDL_Window *window = SDL_CreateWindow("LifteSCH", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, szeles, magas, 0);
     if (window == NULL)
     {
-        SDL_Log("Nem hozhato letre az ablak: %s", SDL_GetError());
+        SDL_Log("Nem hozhato letre az ablak: %s\n", SDL_GetError());
+        exit(1);
+    }
+
+    // renderer
+    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    //SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
+    if (renderer == NULL)
+    {
+        SDL_Log("Nem hozhato letre a megjelenito: %s\n", SDL_GetError());
+        exit(1);
+    }
+    SDL_RenderClear(renderer);
+
+    // mixer
+    if(Mix_OpenAudio(8000, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0)
+    {
+        SDL_Log("Nem hozhato letre a mixer: %s\n", Mix_GetError());
+        exit(1);
+    }
+
+    //Load music
+    Mix_Music *music = Mix_LoadMUS("elvonozene.wav");
+    if(music == NULL)
+    {
+        SDL_Log("Nem toltheto be a zene: %s\n", Mix_GetError());
         exit(1);
     }
 
@@ -33,17 +59,9 @@ void ablak_init(int szeles, int magas, SDL_Window **pwindow, SDL_Renderer **pren
     SDL_SetWindowIcon(window, icon);
     SDL_FreeSurface(icon);
 
-    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    //SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
-    if (renderer == NULL)
-    {
-        SDL_Log("Nem hozhato letre a megjelenito: %s", SDL_GetError());
-        exit(1);
-    }
-    SDL_RenderClear(renderer);
-
     *pwindow = window;
     *prenderer = renderer;
+    *pmusic = music;
 }
 
 // remember to destory textures
@@ -187,6 +205,13 @@ void drawwaitingppl(SDL_Renderer *renderer, SDL_Texture *embertexture, utastomb 
     }
 }
 
+void drawstats(SDL_Renderer *renderer, avg waitt, avg travelt){
+    char tmpstr[3]; // 2 char + '\0'
+    sprintf(tmpstr, "%2d", waitt.avgerage);
+    //stringColor(renderer, liftbox.rect.x+2, liftbox.rect.y+2, tmpstr, lift.state==LIFTBOARDING ? FEHER : FEKETE);
+
+}
+
 void uiinit(button buttons[]){
     for (int sor = 0; sor < 4; sor++)
     {
@@ -273,7 +298,7 @@ int szintinput(SDL_Renderer *renderer, int from){
 
     SDL_Event event;
     bool update = true;
-    vector mouse = {0, 0};
+    vector mousepos = {0, 0};
     bool mousepressed = false;
     int result = -128;
 
@@ -304,11 +329,9 @@ int szintinput(SDL_Renderer *renderer, int from){
             {
             case SDL_MOUSEBUTTONDOWN:
                 mousepressed = true;
-                // printf("%d, %d\n", mouse.x, mouse.y);
-                if (mat_buttoni(buttons, 12, mouse) != -1){
-                    buttons[mat_buttoni(buttons, 12, mouse)].pressed = true;
-                    stoptime = inputdur + SDL_GetTicks();
-                    freezetimer = false;
+                int pressedbutton = mat_buttoni(buttons, 12, mousepos);
+                if (pressedbutton != -1){
+                    buttons[pressedbutton].pressed = true;
                 }
                     
                 update = true;
@@ -318,8 +341,11 @@ int szintinput(SDL_Renderer *renderer, int from){
                 mousepressed = false;
                 for (int i = 0; i < 12; i++)
                 {
-                    if (buttons[i].pressed)
+                    if (buttons[i].pressed && mat_inbounds(buttons[i].rect, mousepos))
                     {
+                        stoptime = inputdur + SDL_GetTicks();
+                        freezetimer = false;
+                        
                         if (paneltext[1] == '?')
                         {
                             paneltext[0] = ' ';
@@ -344,7 +370,7 @@ int szintinput(SDL_Renderer *renderer, int from){
                 break;
 
             case SDL_MOUSEMOTION:
-                mouse = (vector){event.button.x, event.button.y};
+                mousepos = (vector){event.button.x, event.button.y};
                 update = true;
                 break;
 
@@ -413,7 +439,7 @@ int szintinput(SDL_Renderer *renderer, int from){
         {
             clearpinpad(renderer);
             drawpin(renderer, 1.0, buttons, paneltext, smoothscale);
-            drawuiaccent(renderer, buttons, mouse, mousepressed);
+            drawuiaccent(renderer, buttons, mousepos, mousepressed);
             SDL_RenderPresent(renderer);
             update = false;
         }
@@ -435,6 +461,5 @@ int szintinput(SDL_Renderer *renderer, int from){
     SDL_RenderPresent(renderer);
    
 
-    printf("%d\n", result);
     return result;
 }

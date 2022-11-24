@@ -165,7 +165,6 @@ bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint
             l->state = LIFTIDLE;
             l->todo_from[l->floor+1] = false;
             l->todo_to[l->floor+1] = false;
-            printf("backtoidle %d\n", SDL_GetTicks());
             break;
         }
 
@@ -173,7 +172,6 @@ bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint
         if (l->inside.meret >= l->maxppl && !*vankiszallo)
         {
             l->state = LIFTMOVE;
-            printf("backtomov\n");
             break;
         }
 
@@ -184,7 +182,6 @@ bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint
         //1 cycle
         if (l->anim_board >= 54)
         {
-            printf("%d", *vankiszallo);
             //reset cycle
             l->anim_board = 0;
 
@@ -206,8 +203,6 @@ bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint
                                 break;
                             }
                         
-
-                        printf("ki\n");
                         //egyszerre csak egy
                         break;
                     }
@@ -228,7 +223,6 @@ bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint
                     // van e még beszálló?
                     l->todo_from[l->floor+1] = varok->meret != 0;
 
-                    printf("be\n");
                     //egyszerre csak egy
                     break;
                 }
@@ -252,8 +246,7 @@ bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint
             }
 
         }
-        
-        
+
         break; 
     
     default:

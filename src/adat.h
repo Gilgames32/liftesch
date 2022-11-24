@@ -6,6 +6,11 @@
 #include <stdbool.h>
 #include <SDL.h>
 
+typedef struct avg
+{
+    int avgerage, cnt;
+} avg;
+
 typedef struct utas
 {
     int from, to, dir;

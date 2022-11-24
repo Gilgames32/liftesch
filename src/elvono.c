@@ -6,6 +6,7 @@
 #include <SDL.h>
 #include <SDL2_gfxPrimitives.h>
 #include <SDL_image.h>
+#include <SDL_mixer.h>
 
 #include "debugmalloc.h"
 #include "liftmat.h"
@@ -20,8 +21,11 @@ int main(int argc, char *argv[])
     // init
     SDL_Window *window;
     SDL_Renderer *renderer;
-    ablak_init(WINX, WINY, &window, &renderer);
+    Mix_Music *music;
+    ablak_init(WINX, WINY, &window, &renderer, &music);
     ablak_cls(renderer);
+
+    Mix_PlayMusic(music, -1);
 
     // load textures
     SDL_Texture *nyiltexture = ablak_loadtexture(renderer, "nyil.png");
@@ -31,6 +35,9 @@ int main(int argc, char *argv[])
     // ui components
     SDL_Rect emberrect = {DNBX, DNBY, NBERX, NBERY};
     button loadbutton = {(SDL_Rect){LDBTNX, LDBTNY, CELLSIZE, CELLSIZE}};
+
+    // stats
+    avg waittime = {}, traveltime = {};
 
     // liftek init
     elvono liftek[4] = {0};
@@ -51,9 +58,12 @@ int main(int argc, char *argv[])
         l->anim_y = (double)l->pos.y;
         l->anim_board = 0;
         l->anim_flip = false;
+
+        l->waitt = &waittime;
+        l->travelt = &traveltime;
     }
 
-    // szintek liftajtó:szint, miért? mert így kevesebbet kell szarakodni, A = 0
+    // szintek liftajtó : szint, A = 0
     utastomb szintek[4][20] = {0};
 
     // várólista fájlból
@@ -64,8 +74,7 @@ int main(int argc, char *argv[])
     int prev = SDL_GetTicks(), curr = SDL_GetTicks(), deltatime = 0;
     SDL_Event event;
     bool update = true;
-    vector mouse = {0, 0};
-    bool mousepressed = false;
+    vector mousepos = {0, 0};
     bool drag = false;
     
 
@@ -78,9 +87,7 @@ int main(int argc, char *argv[])
             switch (event.type)
             {
             case SDL_MOUSEBUTTONDOWN:
-                mousepressed = true;
-                // printf("%d, %d\n", mouse.x, mouse.y);
-                if (mat_inbounds(emberrect, mouse))
+                if (mat_inbounds(emberrect, mousepos))
                 {
                     drag = true;
                 }
@@ -88,10 +95,9 @@ int main(int argc, char *argv[])
                 break;
 
             case SDL_MOUSEBUTTONUP:
-                mousepressed = false;
                 if (drag)
                 {
-                    int szinti = mat_szintbacktrack(mouse);
+                    int szinti = mat_szintbacktrack(mousepos);
                     if (szinti != -128)
                     {
                         utas temputas = {-128, -128, 0, 0, 0};
@@ -105,7 +111,6 @@ int main(int argc, char *argv[])
                         }
                         temputas.to = toszint;
                         temputas.dir = temputas.to > temputas.from ? 1 : -1;
-                        printf("%d. szint %d\n", temputas.from, temputas.to);
                         int pickedlift = picklift(temputas, liftek, szintek);
                         utastomb_append(&(szintek[pickedlift][temputas.from+1]), temputas);
                         liftek[pickedlift].todo_from[temputas.from + 1] = true;
@@ -118,7 +123,7 @@ int main(int argc, char *argv[])
                 break;
 
             case SDL_MOUSEMOTION:
-                mouse = (vector){event.button.x, event.button.y};
+                mousepos = (vector){event.button.x, event.button.y};
                 update = true; //drag
                 break;
 
@@ -167,7 +172,7 @@ int main(int argc, char *argv[])
             // render
             ablak_cls(renderer);
 
-            // liftek, egyelőre csak egyet renderel
+            // liftek
             for (int lifti = 0; lifti < 4; lifti++)
             {
                 elvono *l = liftek + lifti;
@@ -177,13 +182,23 @@ int main(int argc, char *argv[])
                 drawlift(renderer, *l, nyiltexture);
             }
 
+            // schönherz és ui
             drawschonherz(renderer, titletexture);
+
+            // váró emberek
             drawwaitingppl(renderer, embertexture, szintek);
 
+            // ha húz egy embert akkor a megfelelő szintet kiemeli
             if (drag)
-                drawszintaccent(renderer, mouse);
+                drawszintaccent(renderer, mousepos);
             
-            drawnber(renderer, embertexture, drag ? (vector){mouse.x - NBERX / 2, mouse.y - NBERY / 3} : (vector){emberrect.x, emberrect.y});
+            // dragndrop ember
+            drawnber(renderer, embertexture, drag ? (vector){mousepos.x - NBERX / 2, mousepos.y - NBERY / 3} : (vector){emberrect.x, emberrect.y});
+            
+            // stats
+            // drawstats(renderer, waittime, traveltime);
+
+            // apply
             SDL_RenderPresent(renderer);
             
         }
@@ -191,11 +206,18 @@ int main(int argc, char *argv[])
 
 
 
-    // cleanup memory
+    // sdl cleanup
     SDL_DestroyTexture(embertexture);
     SDL_DestroyTexture(nyiltexture);
     SDL_DestroyTexture(titletexture);
+    IMG_Quit();
 
+    Mix_HaltMusic();
+    Mix_FreeMusic(music);
+    Mix_Quit();
+
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
     SDL_Quit();
 
     //szintek
