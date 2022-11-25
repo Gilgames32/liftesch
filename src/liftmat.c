@@ -1,33 +1,35 @@
 #include "liftmat.h"
 
 // indexként térít vissza, nem szintként!
-int todo_min(bool todo_to[], bool todo_from[], bool fisrtonly){
+int todo_min(bool todo_to[], bool todo_from[], bool fisrtonly)
+{
     for (int i = 0; i < 20; i++)
-    if (todo_to[i] || (todo_from[i] && !fisrtonly))
+        if (todo_to[i] || (todo_from[i] && !fisrtonly))
             return i;
 
     return -128;
 }
 
 // indexként térít vissza, nem szintként!
-int todo_max(bool todo_to[], bool todo_from[], bool fisrtonly){
-    for (int i = 20-1; i >= 0; i--)
-    if (todo_to[i] || (todo_from[i] && !fisrtonly))
-        return i;
+int todo_max(bool todo_to[], bool todo_from[], bool fisrtonly)
+{
+    for (int i = 20 - 1; i >= 0; i--)
+        if (todo_to[i] || (todo_from[i] && !fisrtonly))
+            return i;
 
     return -128;
 }
 
-bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint[]){
+bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint[])
+{
     bool update = false;
     switch (l->state)
     {
 
-
     // üres todolist esetén idle
     case LIFTIDLE:
         // ha pont arra a szintre érkezett valaki
-        if (szint[l->floor+1].meret != 0)
+        if (szint[l->floor + 1].meret != 0)
         {
             l->state = LIFTBOARDING;
             update = true;
@@ -39,7 +41,7 @@ bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint
         {
             if (l->todo_from[j] || l->todo_to[j])
             {
-                //megfelelő irányba elindítás
+                // megfelelő irányba elindítás
                 l->direction = l->floor < j ? 1 : -1;
                 l->state = LIFTMOVE;
                 update = true;
@@ -48,7 +50,6 @@ bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint
         }
 
         break;
-
 
     // mozgatás
     case LIFTMOVE:
@@ -63,92 +64,88 @@ bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint
 
         // ha pre de már a snapvonal után van, azaz elérte
         if (l->anim_pre &&
-            (
-                (l->direction == +1 && l->pos.y <= mat_szinty(l->floor)-LOS)
-                ||
-                (l->direction == -1 && l->pos.y >= mat_szinty(l->floor)-LOS)
-            )
-        )
+            ((l->direction == +1 && l->pos.y <= mat_szinty(l->floor) - LOS) ||
+             (l->direction == -1 && l->pos.y >= mat_szinty(l->floor) - LOS)))
         {
             l->anim_pre = false;
 
             // ha van kit letenni, vagy még nincs tele és van kit felvenni
-            if (l->todo_to[l->floor+1] || (l->inside.meret < l->maxppl && l->todo_from[l->floor+1]))
+            if (l->todo_to[l->floor + 1] || (l->inside.meret < l->maxppl && l->todo_from[l->floor + 1]))
             {
                 // megláll és snap
-                l->pos.y = mat_szinty(l->floor)-LOS;
+                l->pos.y = mat_szinty(l->floor) - LOS;
                 l->anim_y = (double)l->pos.y;
                 l->state = LIFTBOARDING;
                 break;
             }
         }
 
-        //mozgatás
-        l->anim_y -= (double)deltatime/4 * l->direction;
+        // mozgatás
+        l->anim_y -= (double)deltatime / 4 * l->direction;
         l->pos.y = (int)l->anim_y;
 
         break;
 
-
     case LIFTBOARDING:
         update = true;
 
-        utastomb *varok = &(szint[l->floor+1]);
-        bool *vankiszallo = &(l->todo_to[l->floor+1]);
+        utastomb *varok = &(szint[l->floor + 1]);
+        bool *vankiszallo = &(l->todo_to[l->floor + 1]);
 
         // vissza idlebe ha nincsenek utasok
-        if(varok->meret == 0 && l->inside.meret == 0)
+        if (varok->meret == 0 && l->inside.meret == 0)
         {
             l->direction = 0;
             l->state = LIFTIDLE;
-            l->todo_from[l->floor+1] = false;
-            l->todo_to[l->floor+1] = false;
+            l->todo_from[l->floor + 1] = false;
+            l->todo_to[l->floor + 1] = false;
             break;
         }
 
-        //vissza moveba ha tele van
+        // vissza moveba ha tele van
         if (l->inside.meret >= l->maxppl && !*vankiszallo)
         {
             l->state = LIFTMOVE;
             break;
         }
 
-        //nyíl anim apply
-        l->anim_board += (double)deltatime/2;
+        // nyíl anim apply
+        l->anim_board += (double)deltatime / 2;
         l->anim_flip = *vankiszallo;
 
-        //1 cycle
+        // 1 cycle
         if (l->anim_board >= 54)
         {
-            //reset cycle
+            // reset cycle
             l->anim_board = 0;
 
             // nyíl iránya alapján :stuff:
             if (*vankiszallo)
             {
-                //ki
+                // ki
                 for (int i = 0; i < l->inside.meret; i++)
                 {
                     if (l->inside.utasok[i].to == l->floor)
                     {
                         utastomb_indexremove(&(l->inside), i);
-                        
+
                         // van e még kiszálló?
                         *vankiszallo = false;
                         for (int i = 0; i < l->inside.meret; i++)
-                            if (l->inside.utasok[i].to == l->floor){
+                            if (l->inside.utasok[i].to == l->floor)
+                            {
                                 *vankiszallo = true;
                                 break;
                             }
-                        
-                        //egyszerre csak egy
+
+                        // egyszerre csak egy
                         break;
                     }
                 }
             }
             else
             {
-                //be
+                // be
                 for (int i = 0; i < varok->meret; i++)
                 {
                     utas temputas = varok->utasok[i];
@@ -156,12 +153,12 @@ bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint
                     utastomb_indexremove(varok, i);
                     utastomb_append(&(l->inside), temputas);
                     // célállomás bejelölése
-                    l->todo_to[temputas.to+1] = temputas.dir;
-                    
-                    // van e még beszálló?
-                    l->todo_from[l->floor+1] = varok->meret != 0;
+                    l->todo_to[temputas.to + 1] = temputas.dir;
 
-                    //egyszerre csak egy
+                    // van e még beszálló?
+                    l->todo_from[l->floor + 1] = varok->meret != 0;
+
+                    // egyszerre csak egy
                     break;
                 }
             }
@@ -173,20 +170,18 @@ bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint
                 // ha felfele dir de ez a legfelső pont vagy
                 // ha lefele dir de ez a legalsó pont
                 // this is a terrible way of doing this
-                if (l->floor == 18 || (l->direction == +1 && l->floor+1 >= todo_max(l->todo_to, l->todo_from, l->inside.meret >= l->maxppl)))
+                if (l->floor == 18 || (l->direction == +1 && l->floor + 1 >= todo_max(l->todo_to, l->todo_from, l->inside.meret >= l->maxppl)))
                     l->direction = -1;
-                if (l->floor == -1 || (l->direction == -1 && l->floor+1 <= todo_min(l->todo_to, l->todo_from, l->inside.meret >= l->maxppl)))
+                if (l->floor == -1 || (l->direction == -1 && l->floor + 1 <= todo_min(l->todo_to, l->todo_from, l->inside.meret >= l->maxppl)))
                     l->direction = +1;
 
                 // és elindul
                 l->state = LIFTMOVE;
-                
             }
-
         }
 
-        break; 
-    
+        break;
+
     default:
         break;
     }
@@ -196,7 +191,7 @@ bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint
 
 int picklift(utas temputas, elvono liftek[], utastomb szintek[][20])
 {
-    return rand()%4;
+    return rand() % 4;
     // összehasonlítás
     // return minimum
 }

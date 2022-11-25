@@ -45,22 +45,20 @@ enum sch_const
     LOS = 16 // liftoffset
 };
 
-
-
 enum ui_pin_const
 {
     PADDING = 16,
     CELLSIZE = 42,
 
     UIX1 = 752,
-    UIY1 = PADDING*2 + TITLEY,
+    UIY1 = PADDING * 2 + TITLEY,
     UIW = PADDING + 3 * (CELLSIZE + PADDING),
     UIH = PADDING + 1 * (CELLSIZE + PADDING),
     UIX2 = UIX1 + UIW,
     UIY2 = UIY1 + UIH,
 
-    DNBX = (int)(UIX1 + PADDING + CELLSIZE*.5 - NBERX/2),
-    DNBY = (int)(UIY1 + PADDING + CELLSIZE*.5 - NBERY/2),
+    DNBX = (int)(UIX1 + PADDING + CELLSIZE * .5 - NBERX / 2),
+    DNBY = (int)(UIY1 + PADDING + CELLSIZE * .5 - NBERY / 2),
     LDBTNX = UIX1 + 3 * (CELLSIZE + PADDING),
     LDBTNY = UIY1 + 1 * (CELLSIZE + PADDING),
 

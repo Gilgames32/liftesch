@@ -39,7 +39,8 @@ int mat_szintbacktrack(vector mouse)
         return -128;
 }
 
-int mat_buttoni(button buttons[], int meret, vector mouse){
+int mat_buttoni(button buttons[], int meret, vector mouse)
+{
     for (int i = 0; i < meret; i++)
     {
         if (mat_inbounds(buttons[i].rect, mouse))
@@ -53,7 +54,7 @@ int mat_buttoni(button buttons[], int meret, vector mouse){
 void utastomb_append(utastomb *ul, utas ut)
 {
     utastomb tempul = {NULL, ul->meret + 1};
-    tempul.utasok = (utas*) malloc(tempul.meret * sizeof(utas));
+    tempul.utasok = (utas *)malloc(tempul.meret * sizeof(utas));
     for (int i = 0; i < ul->meret; i++)
     {
         tempul.utasok[i] = ul->utasok[i];
@@ -65,10 +66,10 @@ void utastomb_append(utastomb *ul, utas ut)
 void utastomb_indexremove(utastomb *ul, int index)
 {
     utastomb tempul = {NULL, ul->meret - 1};
-    tempul.utasok = (utas*) malloc(tempul.meret * sizeof(utas));
+    tempul.utasok = (utas *)malloc(tempul.meret * sizeof(utas));
     for (int i = 0; i < tempul.meret; i++)
     {
-        tempul.utasok[i] = ul->utasok[i<index ? i : i+1];
+        tempul.utasok[i] = ul->utasok[i < index ? i : i + 1];
     }
     free(ul->utasok);
     *ul = tempul;
@@ -86,26 +87,30 @@ void varolista_free(varolistaelem **eleje)
 }
 
 // pointer pointer my beloved ,,,uwu,,,
-void varolista_append(varolistaelem **eleje, varoutas add){
+void varolista_append(varolistaelem **eleje, varoutas add)
+{
     varolistaelem **mozgo = eleje;
-    while (*mozgo != NULL){
+    while (*mozgo != NULL)
+    {
         mozgo = &(*mozgo)->kov;
     }
-    
-    varolistaelem *ujelem = (varolistaelem*) malloc(sizeof(varolistaelem));
+
+    varolistaelem *ujelem = (varolistaelem *)malloc(sizeof(varolistaelem));
     ujelem->adat = add;
     ujelem->kov = NULL;
     *mozgo = ujelem;
 }
 
-void varolista_firstremove(varolistaelem **eleje){
+void varolista_firstremove(varolistaelem **eleje)
+{
     varolistaelem *ujeleje = (*eleje)->kov;
     free(*eleje);
     *eleje = ujeleje;
 }
 
-varolistaelem* fajlbol(void) {
-    FILE* fp;
+varolistaelem *fajlbol(void)
+{
+    FILE *fp;
     fp = fopen("erkezok.txt", "r");
     if (fp != NULL)
     {
@@ -126,8 +131,6 @@ varolistaelem* fajlbol(void) {
         fclose(fp);
         return eleje;
     }
-
-
 
     else
         perror("Érvénytelen fájl");

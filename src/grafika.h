@@ -8,7 +8,6 @@
 #include <SDL_mixer.h>
 #include "adat.h"
 
-
 void ablak_cls(SDL_Renderer *renderer);
 
 void ablak_init(int szeles, int magas, SDL_Window **pwindow, SDL_Renderer **prenderer, Mix_Music **pmusic);

@@ -12,8 +12,6 @@
 #include "grafika.h"
 #include "adat.h"
 
-
-
 int main(int argc, char *argv[])
 {
 
@@ -33,7 +31,7 @@ int main(int argc, char *argv[])
 
     // ui components
     SDL_Rect emberrect = {DNBX, DNBY, NBERX, NBERY};
-    //button loadbutton = {(SDL_Rect){LDBTNX, LDBTNY, CELLSIZE, CELLSIZE}};
+    // button loadbutton = {(SDL_Rect){LDBTNX, LDBTNY, CELLSIZE, CELLSIZE}};
 
     // stats
     avg waittime = {}, traveltime = {};
@@ -75,7 +73,6 @@ int main(int argc, char *argv[])
     bool update = true;
     vector mousepos = {0, 0};
     bool drag = false;
-    
 
     bool quit = false;
     while (!quit)
@@ -111,7 +108,7 @@ int main(int argc, char *argv[])
                         temputas.to = toszint;
                         temputas.dir = temputas.to > temputas.from ? 1 : -1;
                         int pickedlift = picklift(temputas, liftek, szintek);
-                        utastomb_append(&(szintek[pickedlift][temputas.from+1]), temputas);
+                        utastomb_append(&(szintek[pickedlift][temputas.from + 1]), temputas);
                         liftek[pickedlift].todo_from[temputas.from + 1] = true;
                         deltatime = 0;
                         curr = prev;
@@ -123,7 +120,7 @@ int main(int argc, char *argv[])
 
             case SDL_MOUSEMOTION:
                 mousepos = (vector){event.button.x, event.button.y};
-                update = true; //drag
+                update = true; // drag
                 break;
 
             case SDL_QUIT:
@@ -138,9 +135,9 @@ int main(int argc, char *argv[])
         curr = SDL_GetTicks();
         deltatime = curr - prev;
         prev = curr;
-        //40 fps alatt belassul a program, így nem skippel szinteket
-        if (deltatime > 40) deltatime = 40;
-
+        // 40 fps alatt belassul a program, így nem skippel szinteket
+        if (deltatime > 40)
+            deltatime = 40;
 
         // várólista management
         if (varokeleje != NULL)
@@ -149,21 +146,18 @@ int main(int argc, char *argv[])
             varoktimer += deltatime;
             if (varoktimer >= varokeleje->adat.varoido)
             {
-                //be a szintre
-                //todo: implement the liftpick here too
+                // be a szintre
+                // todo: implement the liftpick here too
                 utas temputas = varokeleje->adat.varo;
                 int pickedlift = picklift(temputas, liftek, szintek);
-                utastomb_append(&(szintek[pickedlift][temputas.from+1]), temputas);
+                utastomb_append(&(szintek[pickedlift][temputas.from + 1]), temputas);
                 liftek[pickedlift].todo_from[temputas.from + 1] = true;
 
                 varoktimer -= varokeleje->adat.varoido;
                 varolista_firstremove(&varokeleje);
             }
-            
         }
-        
 
-        
         // apply movement and render
         if (update)
         {
@@ -190,20 +184,17 @@ int main(int argc, char *argv[])
             // ha húz egy embert akkor a megfelelő szintet kiemeli
             if (drag)
                 drawszintaccent(renderer, mousepos);
-            
+
             // dragndrop ember
             drawnber(renderer, embertexture, drag ? (vector){mousepos.x - NBERX / 2, mousepos.y - NBERY / 3} : (vector){emberrect.x, emberrect.y});
-            
+
             // stats
             // drawstats(renderer, waittime, traveltime);
 
             // apply
             SDL_RenderPresent(renderer);
-            
         }
     }
-
-
 
     // sdl cleanup
     SDL_DestroyTexture(embertexture);
@@ -219,7 +210,7 @@ int main(int argc, char *argv[])
     SDL_DestroyWindow(window);
     SDL_Quit();
 
-    //szintek
+    // szintek
     for (int i = 0; i < 4; i++)
     {
         for (int j = 0; j < 20; j++)
@@ -228,7 +219,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    //liftek
+    // liftek
     for (int i = 0; i < 4; i++)
     {
         free(liftek[i].inside.utasok);
