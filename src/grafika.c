@@ -99,7 +99,7 @@ void drawschonherz(SDL_Renderer *renderer, SDL_Texture *title)
         boxColor(renderer, SCHX1 - MARGOY, mat_szinty(i) - MARGOY, SCHX2 + MARGOY, mat_szinty(i) + MARGOY, FEKETE);
         lineColor(renderer, SCHX1, mat_szinty(i), SCHX2, mat_szinty(i), i == 0 ? FEHER : FEHER50);
         // emelet szám
-        char tmpstr[3]; // 2 char + '\0'
+        char tmpstr[2+1]; // 2 char + '\0'
         sprintf(tmpstr, "%2d", i);
         stringColor(renderer, SCHX2 + 4, mat_szinty(i) - 16, tmpstr, FEHER);
     }
@@ -147,7 +147,7 @@ void drawlift(SDL_Renderer *renderer, elvono lift, SDL_Texture *nyiltexture)
     liftbox.rect.y -= liftbox.rect.h / 2;
     drawbox(renderer, liftbox);
     lineColor(renderer, liftbox.rect.x + liftbox.rect.w / 2, liftbox.rect.y, liftbox.rect.x + liftbox.rect.w / 2, SCHY1, FEHER25);
-    char tmpstr[3]; // 2 char + '\0'
+    char tmpstr[2+1]; // 2 char + '\0'
     sprintf(tmpstr, "%2d", lift.floor);
     stringColor(renderer, liftbox.rect.x + 2, liftbox.rect.y + 2, tmpstr, lift.state == LIFTBOARDING ? FEHER : FEKETE);
 
@@ -191,7 +191,7 @@ void drawwaitingppl(SDL_Renderer *renderer, SDL_Texture *embertexture, utastomb 
             else
             {
                 drawnber(renderer, embertexture, (vector){mat_liftx(i) + 32, mat_szinty(j) + 6});
-                char tmpstr[5]; // 4 char + '\0'
+                char tmpstr[4+1]; // 4 char + '\0'
                 sprintf(tmpstr, "%4d", szintek[i][j].meret);
                 stringColor(renderer, mat_liftx(i) + 64, mat_szinty(j) + 12, tmpstr, FEHER);
             }
@@ -201,9 +201,11 @@ void drawwaitingppl(SDL_Renderer *renderer, SDL_Texture *embertexture, utastomb 
 
 void drawstats(SDL_Renderer *renderer, avg waitt, avg travelt)
 {
-    char tmpstr[3]; // 2 char + '\0'
-    sprintf(tmpstr, "%2d", waitt.avgerage);
-    // stringColor(renderer, liftbox.rect.x+2, liftbox.rect.y+2, tmpstr, lift.state==LIFTBOARDING ? FEHER : FEKETE);
+    char tmpstr[4+2+4+1+1]; // VARO + :_ + __._s + \0
+    sprintf(tmpstr, "VARO: %4.1fs", (double)waitt.avgerage/1000);
+    stringColor(renderer, STATX, STATY, tmpstr, FEHER);
+    sprintf(tmpstr, "UTAZ: %4.1fs", (double)travelt.avgerage/1000);
+    stringColor(renderer, STATX, STATY+(int)(1.5*PADDING), tmpstr, FEHER);
 }
 
 void uiinit(button buttons[])

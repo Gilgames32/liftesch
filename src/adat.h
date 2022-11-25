@@ -42,7 +42,7 @@ enum sch_const
     SCHSZINT = 32,
     SCHMAX = 18,
     SCHMIN = -1,
-    LOS = 16 // liftoffset
+    LOS = SCHSZINT/2 // liftoffset
 };
 
 enum ui_pin_const
@@ -59,8 +59,8 @@ enum ui_pin_const
 
     DNBX = (int)(UIX1 + PADDING + CELLSIZE * .5 - NBERX / 2),
     DNBY = (int)(UIY1 + PADDING + CELLSIZE * .5 - NBERY / 2),
-    LDBTNX = UIX1 + 3 * (CELLSIZE + PADDING),
-    LDBTNY = UIY1 + 1 * (CELLSIZE + PADDING),
+    STATX = UIX1 + PADDING + 1 * (CELLSIZE + PADDING),
+    STATY = UIY1 + (int)(1.5*PADDING),
 
     PINX1 = UIX1,
     PINY1 = UIY2 + PADDING,
@@ -133,9 +133,6 @@ typedef struct elvono
     bool anim_pre;     // check if its pre or past the snapline
     double anim_board; // boarding animation smoother
     bool anim_flip;    // nyíl flip
-
-    // stats
-    avg *waitt, *travelt;
 } elvono;
 
 typedef struct box

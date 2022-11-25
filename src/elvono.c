@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     {
         elvono *l = liftek + i;
         l->id = 'A' + i;
-        l->maxppl = i < 2 ? 3 : 21; // A és B liftek 13 fősek, C és D 21
+        l->maxppl = i < 2 ? 13 : 21; // A és B liftek 13 fősek, C és D 21
 
         l->floor = 0;
         // todo empty
@@ -55,9 +55,6 @@ int main(int argc, char *argv[])
         l->anim_y = (double)l->pos.y;
         l->anim_board = 0;
         l->anim_flip = false;
-
-        l->waitt = &waittime;
-        l->travelt = &traveltime;
     }
 
     // szintek liftajtó : szint, A = 0
@@ -65,10 +62,9 @@ int main(int argc, char *argv[])
 
     // várólista fájlból
     varolistaelem *varokeleje = fajlbol();
-    int varoktimer = 0;
+    Uint32 varoktimer = 0;
 
-    // ezekből lehet uint kéne?
-    int prev = SDL_GetTicks(), curr = SDL_GetTicks(), deltatime = 0;
+    Uint32 prev = SDL_GetTicks(), curr = SDL_GetTicks(), deltatime = 0, localtime = 0;
     SDL_Event event;
     bool update = true;
     vector mousepos = {0, 0};
@@ -96,8 +92,8 @@ int main(int argc, char *argv[])
                     int szinti = mat_szintbacktrack(mousepos);
                     if (szinti != -128)
                     {
-                        utas temputas = {-128, -128, 0, 0, 0};
-                        temputas.from = szinti;
+                        // initialize new utas
+                        utas temputas = {szinti, -128, 0, -1, -1};
                         int toszint = szintinput(renderer, temputas.from);
                         // ha panel közben kapunk exit kódot
                         if (toszint == -128)
@@ -107,9 +103,15 @@ int main(int argc, char *argv[])
                         }
                         temputas.to = toszint;
                         temputas.dir = temputas.to > temputas.from ? 1 : -1;
+                        // timer for stats
+                        temputas.waiting = localtime;
+
+                        // add utas to lift
                         int pickedlift = picklift(temputas, liftek, szintek);
                         utastomb_append(&(szintek[pickedlift][temputas.from + 1]), temputas);
                         liftek[pickedlift].todo_from[temputas.from + 1] = true;
+
+                        // reset deltatime
                         deltatime = 0;
                         curr = prev;
                     }
@@ -120,7 +122,7 @@ int main(int argc, char *argv[])
 
             case SDL_MOUSEMOTION:
                 mousepos = (vector){event.button.x, event.button.y};
-                update = true; // drag
+                update = true;
                 break;
 
             case SDL_QUIT:
@@ -138,6 +140,7 @@ int main(int argc, char *argv[])
         // 40 fps alatt belassul a program, így nem skippel szinteket
         if (deltatime > 40)
             deltatime = 40;
+        localtime += deltatime;
 
         // várólista management
         if (varokeleje != NULL)
@@ -149,6 +152,7 @@ int main(int argc, char *argv[])
                 // be a szintre
                 // todo: implement the liftpick here too
                 utas temputas = varokeleje->adat.varo;
+                temputas.waiting = localtime;
                 int pickedlift = picklift(temputas, liftek, szintek);
                 utastomb_append(&(szintek[pickedlift][temputas.from + 1]), temputas);
                 liftek[pickedlift].todo_from[temputas.from + 1] = true;
@@ -169,7 +173,7 @@ int main(int argc, char *argv[])
             for (int lifti = 0; lifti < 4; lifti++)
             {
                 elvono *l = liftek + lifti;
-                if (updatelift(renderer, deltatime, l, szintek[lifti]))
+                if (updatelift(renderer, deltatime, l, szintek[lifti], localtime, &waittime, &traveltime))
                     update = true;
 
                 drawlift(renderer, *l, nyiltexture);
@@ -189,7 +193,7 @@ int main(int argc, char *argv[])
             drawnber(renderer, embertexture, drag ? (vector){mousepos.x - NBERX / 2, mousepos.y - NBERY / 3} : (vector){emberrect.x, emberrect.y});
 
             // stats
-            // drawstats(renderer, waittime, traveltime);
+            drawstats(renderer, waittime, traveltime);
 
             // apply
             SDL_RenderPresent(renderer);

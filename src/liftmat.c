@@ -20,7 +20,7 @@ int todo_max(bool todo_to[], bool todo_from[], bool fisrtonly)
     return -128;
 }
 
-bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint[])
+bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint[], Uint32 localtime, avg *waitt, avg *travelt)
 {
     bool update = false;
     switch (l->state)
@@ -127,6 +127,11 @@ bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint
                 {
                     if (l->inside.utasok[i].to == l->floor)
                     {
+                        // calc stats
+                        waitt->avgerage = (waitt->cnt*waitt->avgerage + l->inside.utasok[i].waiting) / (waitt->cnt+1);
+                        waitt->cnt++;
+                        travelt->avgerage = (travelt->cnt*travelt->avgerage + l->inside.utasok[i].traveling) / (travelt->cnt+1);
+                        travelt->cnt++;
                         utastomb_indexremove(&(l->inside), i);
 
                         // van e még kiszálló?
@@ -149,6 +154,7 @@ bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint
                 for (int i = 0; i < varok->meret; i++)
                 {
                     utas temputas = varok->utasok[i];
+                    temputas.traveling = localtime;
                     // várókból a liftbe rajka
                     utastomb_indexremove(varok, i);
                     utastomb_append(&(l->inside), temputas);

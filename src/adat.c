@@ -121,7 +121,7 @@ varolistaelem *fajlbol(void)
         {
             if (vfrom != vto && mat_inbetween(-1, 18, vfrom) && mat_inbetween(-1, 18, vto))
             {
-                varolista_append(&eleje, (varoutas){vwait, {vfrom, vto, vto > vfrom ? 1 : -1}});
+                varolista_append(&eleje, (varoutas){vwait, {vfrom, vto, vto > vfrom ? 1 : -1, -1, -1}});
             }
             else
                 // ezt egyelőre még a végén is kiteszi
