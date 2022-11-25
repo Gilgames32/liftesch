@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <math.h>
 
 #include <SDL.h>
 #include <SDL2_gfxPrimitives.h>
@@ -34,7 +33,7 @@ int main(int argc, char *argv[])
 
     // ui components
     SDL_Rect emberrect = {DNBX, DNBY, NBERX, NBERY};
-    button loadbutton = {(SDL_Rect){LDBTNX, LDBTNY, CELLSIZE, CELLSIZE}};
+    //button loadbutton = {(SDL_Rect){LDBTNX, LDBTNY, CELLSIZE, CELLSIZE}};
 
     // stats
     avg waittime = {}, traveltime = {};

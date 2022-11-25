@@ -1,8 +1,4 @@
 #include "grafika.h"
-#include "adat.h"
-#include "liftmat.h"
-#include <SDL.h>
-#include <SDL_mixer.h>
 
 void ablak_cls(SDL_Renderer *renderer)
 {
@@ -129,7 +125,7 @@ void drawschonherz(SDL_Renderer *renderer, SDL_Texture *title)
     SDL_RenderCopy(renderer, title, &src, &dest);
 
     // ui thingy
-    rectangleColor(renderer, UIX1, UIY1, UIX2, UIY2);
+    rectangleColor(renderer, UIX1, UIY1, UIX2, UIY2, FEHER);
 }
 
 void drawnyil(SDL_Renderer *renderer, SDL_Texture *nyiltexture, int x, vector pos, bool flip)

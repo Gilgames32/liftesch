@@ -23,7 +23,7 @@ endif
 default: CFLAGS += -O3
 default: setupdirs LifteSCH
 
-debug: CFLAGS += -g
+debug: CFLAGS += -g -Werror
 debug: setupdirs LifteSCH
 
 setupdirs:

@@ -1,9 +1,54 @@
 #include "adat.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <SDL.h>
-#include "debugmalloc.h"
+
+bool mat_inrange(int a, int b, int range)
+{
+    return range >= abs(a - b);
+}
+
+// egyszerű between függvény, a-c-b, egyenlőség meg van engedve mind2 oldalon
+bool mat_inbetween(int a, int b, int c)
+{
+    return (a >= c && c >= b) || (b >= c && c >= a);
+}
+
+// megnézi hogy c b-n belül van-é
+bool mat_inbounds(SDL_Rect b, vector c)
+{
+    return mat_inbetween(b.x, b.x + b.w, c.x) && mat_inbetween(b.y, b.y + b.h, c.y);
+}
+
+int mat_szinty(int szinti)
+{
+    return 64 + SCHSZINT * (18 - szinti);
+}
+int mat_szinti(int szinty)
+{
+    return 18 - ((szinty) / SCHSZINT - 1);
+}
+int mat_liftx(int lifti)
+{
+    return lifti * (512 / 4) + 128 + 32;
+}
+
+// -128 invalidot jelez (igen mert van -1. szint bruhhhh)
+int mat_szintbacktrack(vector mouse)
+{
+    if (mat_inbetween(SCHX1 - MARGOX, SCHX1 + SCHW + MARGOX, mouse.x) && mat_inbetween(-1, 18, mat_szinti(mouse.y)))
+        return mat_szinti(mouse.y);
+    else
+        return -128;
+}
+
+int mat_buttoni(button buttons[], int meret, vector mouse){
+    for (int i = 0; i < meret; i++)
+    {
+        if (mat_inbounds(buttons[i].rect, mouse))
+        {
+            return i;
+        }
+    }
+    return -1;
+}
 
 void utastomb_append(utastomb *ul, utas ut)
 {
