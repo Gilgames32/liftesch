@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     ablak_init(WINX, WINY, &window, &renderer, &music);
     ablak_cls(renderer);
 
-    Mix_PlayMusic(music, -1);
+    Mix_PlayMusic(music, -1); // music turned off for debug now
 
     // load textures
     SDL_Texture *nyiltexture = ablak_loadtexture(renderer, "nyil.png");

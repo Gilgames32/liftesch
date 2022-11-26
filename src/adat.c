@@ -63,6 +63,7 @@ void utastomb_append(utastomb *ul, utas ut)
     tempul.utasok[tempul.meret - 1] = ut;
     *ul = tempul;
 }
+
 void utastomb_indexremove(utastomb *ul, int index)
 {
     utastomb tempul = {NULL, ul->meret - 1};
@@ -73,6 +74,17 @@ void utastomb_indexremove(utastomb *ul, int index)
     }
     free(ul->utasok);
     *ul = tempul;
+}
+
+utastomb utastomb_clone(utastomb ul)
+{
+    utastomb tempul = {NULL, ul.meret};
+    tempul.utasok = (utas *)malloc(tempul.meret * sizeof(utas));
+    for (int i = 0; i < ul.meret; i++)
+    {
+        tempul.utasok[i] = ul.utasok[i];
+    }
+    return tempul;
 }
 
 void varolista_free(varolistaelem **eleje)

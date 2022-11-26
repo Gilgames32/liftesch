@@ -42,7 +42,11 @@ enum sch_const
     SCHSZINT = 32,
     SCHMAX = 18,
     SCHMIN = -1,
-    LOS = SCHSZINT/2 // liftoffset
+    LOS = SCHSZINT/2,               // liftoffset
+    LANIMSPEED = 10,                 // lift animation speed (1/x)
+    BANIMSPEED = 5,                 // boarding animation speed (1/x)
+    LSTEP = SCHSZINT*LANIMSPEED,    // lift moving steps count
+    BSTEP = 3*NYILX*BANIMSPEED      // lift boarding steps count
 };
 
 enum ui_pin_const
@@ -169,6 +173,8 @@ int mat_buttoni(button buttons[], int meret, vector mouse);
 void utastomb_append(utastomb *ul, utas ut);
 
 void utastomb_indexremove(utastomb *ul, int index);
+
+utastomb utastomb_clone(utastomb ul);
 
 varoutas sorbe(void);
 
