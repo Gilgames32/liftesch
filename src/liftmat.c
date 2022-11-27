@@ -1,6 +1,5 @@
 #include "liftmat.h"
 
-// indexként térít vissza, nem szintként!
 int todo_min(bool todo_to[], bool todo_from[], bool fisrtonly)
 {
     for (int i = 0; i < 20; i++)
@@ -10,7 +9,6 @@ int todo_min(bool todo_to[], bool todo_from[], bool fisrtonly)
     return INVALID;
 }
 
-// indexként térít vissza, nem szintként!
 int todo_max(bool todo_to[], bool todo_from[], bool fisrtonly)
 {
     for (int i = 20 - 1; i >= 0; i--)
@@ -111,17 +109,16 @@ bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint
             break;
         }
 
-        // nyíl anim apply
+        // nyíl animáció számítás
         l->anim_board += (double)deltatime / BANIMSPEED;
         l->anim_flip = *vankiszallo;
 
-        // 1 cycle
-        if (l->anim_board >= 3*NYILX)
+        // 1 teljes ciklus végén
+        if (l->anim_board >= 3 * NYILX)
         {
             // reset cycle
             l->anim_board = 0;
 
-            // nyíl iránya alapján :stuff:
             if (*vankiszallo)
             {
                 // ki
@@ -196,53 +193,33 @@ int picklift(utas temputas, elvono liftek[], utastomb szintek[][20])
     // printf("picklift called from %d to %d\n", temputas.from, temputas.to);
     int tavok[4] = {};
     for (int i = 0; i < 4; i++)
-    {
         tavok[i] = megeri(temputas, liftek[i], szintek[i]);
-        printf("%c lift - %d steps\n", 'A' + i, tavok[i]);
-    }
 
     int minindex = 0;
     for (int i = 0; i < 4; i++)
-    {
         if (tavok[minindex] > tavok[i])
-        {
             minindex = i;
-        }   
-    }
-    
-    printf("picked: %c\n", 'A' + minindex);
+
     return minindex;
 }
 
-int megeri(utas temputas, elvono l, utastomb eredetiszintoszlop[]){
-    // erre az emeletre mikor jön jó irányban
-    // amikor van ilyen megvizsgáljuk hogy befére (minden útbaeső szinten beférek-e)
-    // ha igen
-        // return lépésszám
-    // ha nem
-        // jön e majd ide?
-            // minden szinten beférek e?
-        // ha nem
-            // a végén jöjjön értem
+int megeri(utas temputas, elvono l, utastomb eredetiszintoszlop[])
+{
+    // klónozás
 
-    // 1 beszálló: 3*nyilx*banim lépés
-    // 1 szint = schszint*lanim lépés
-    // nagyjából időarányos
-
-    // klónozás: liftinside és szintoszlop dinamikus ezért klónozzuk hogy ne csessze szét a többit
     l.inside = utastomb_clone(l.inside);
     // ha már elindult erről a szintről a lift akkor az ilyen szempontból már a következőn van;
-    // if (!l.anim_pre && l.state == LIFTMOVE) l.floor += l.direction;
-    // temporary medicine
-    if (l.direction == 0) l.state = LIFTIDLE;
-    
+    if (!l.anim_pre && l.state == LIFTMOVE)
+        l.floor += l.direction;
+
+    if (l.direction == 0)
+        l.state = LIFTIDLE;
+
     utastomb szintoszlop[20] = {};
     for (int i = 0; i < 20; i++)
-    {
-        szintoszlop[i] = utastomb_clone(eredetiszintoszlop[i]); 
-    }
-    
+        szintoszlop[i] = utastomb_clone(eredetiszintoszlop[i]);
 
+    // léptetés és vizsgálat
     int lepesek = 0;
     while (true)
     {
@@ -252,7 +229,7 @@ int megeri(utas temputas, elvono l, utastomb eredetiszintoszlop[]){
             // a többi útbaeső szinten is befér?
             bool befer = true;
             int utasok = l.inside.meret;
-            for (int i = temputas.from+1; i < temputas.to; i++)
+            for (int i = temputas.from + 1; i < temputas.to; i++)
             {
                 // ki mindenki
                 for (int j = 0; j < l.inside.meret; j++)
@@ -263,7 +240,7 @@ int megeri(utas temputas, elvono l, utastomb eredetiszintoszlop[]){
                     }
                 }
                 // be aki tud
-                utasok += szintoszlop[l.floor+1].meret;
+                utasok += szintoszlop[l.floor + 1].meret;
                 if (utasok > l.maxppl)
                 {
                     befer = false;
@@ -271,7 +248,8 @@ int megeri(utas temputas, elvono l, utastomb eredetiszintoszlop[]){
                 }
             }
 
-            if (befer) break;
+            if (befer)
+                break;
         }
 
         int lepes = leptet(temputas, &l, szintoszlop);
@@ -286,11 +264,9 @@ int megeri(utas temputas, elvono l, utastomb eredetiszintoszlop[]){
         {
             lepesek += lepes;
         }
-        
-
     }
-    
-    // felszabadítás
+
+    // klónok felszabadítása
     free(l.inside.utasok);
     for (int i = 0; i < 20; i++)
     {
@@ -300,8 +276,9 @@ int megeri(utas temputas, elvono l, utastomb eredetiszintoszlop[]){
     return lepesek;
 }
 
-int leptet(utas temputas, elvono *l, utastomb szintoszlop[]){
-    // liftupdate kibelezett verziója
+int leptet(utas temputas, elvono *l, utastomb szintoszlop[])
+{
+    // liftupdate kibelezett és módosított verziója
     int dur = 0;
     switch (l->state)
     {
@@ -325,7 +302,7 @@ int leptet(utas temputas, elvono *l, utastomb szintoszlop[]){
                 break;
             }
         }
-        // true idle
+        // valódi idle esetén
         return -1;
         break;
 
@@ -346,7 +323,7 @@ int leptet(utas temputas, elvono *l, utastomb szintoszlop[]){
         break;
 
     case LIFTBOARDING:
-        ; // ha ezt törlöd meghal a program (real)
+        ; // <-- ha ezt törlöd meghal a program (real)
         utastomb *varok = &(szintoszlop[l->floor + 1]);
 
         // vissza idlebe ha nincsenek utasok
@@ -365,11 +342,12 @@ int leptet(utas temputas, elvono *l, utastomb szintoszlop[]){
             if (l->inside.utasok[i].to == l->floor)
             {
                 utastomb_indexremove(&(l->inside), i);
-                dur += 3*NYILX*BANIMSPEED;
+                dur += 3 * NYILX * BANIMSPEED;
                 i--;
             }
         }
         l->todo_to[l->floor + 1] = false;
+
         // be aki tud
         while (varok->meret > 0 && l->inside.meret < l->maxppl)
         {
@@ -392,7 +370,7 @@ int leptet(utas temputas, elvono *l, utastomb szintoszlop[]){
         {
             // ha felfele dir de ez a legfelső pont vagy
             // ha lefele dir de ez a legalsó pont
-            // this is a terrible way of doing this
+            // this is a terrible way of doing this (once again)
             if (l->floor == 18 || (l->direction == +1 && l->floor + 1 >= todo_max(l->todo_to, l->todo_from, l->inside.meret >= l->maxppl)))
                 l->direction = -1;
             if (l->floor == -1 || (l->direction == -1 && l->floor + 1 <= todo_min(l->todo_to, l->todo_from, l->inside.meret >= l->maxppl)))
@@ -408,6 +386,5 @@ int leptet(utas temputas, elvono *l, utastomb szintoszlop[]){
         break;
     }
 
-    // printf("%c lift %d szinten %d stateben %d todoval\n", l->id, l->floor, l->state, l->todo_to[l->floor+1]);
     return dur;
 }

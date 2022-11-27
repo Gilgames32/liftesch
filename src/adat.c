@@ -90,7 +90,6 @@ void varolista_free(varolistaelem **eleje)
     *eleje = NULL;
 }
 
-// pointer pointer my beloved ,,,uwu,,,
 void varolista_append(varolistaelem **eleje, varoutas add)
 {
     varolistaelem **mozgo = eleje;
@@ -129,7 +128,6 @@ varolistaelem *fajlbol(char *fajlnev)
                 varolista_append(&eleje, (varoutas){vwait, {vfrom, vto, vto > vfrom ? 1 : -1, -1, -1}});
             }
             else
-                // ezt egyelőre még a végén is kiteszi
                 perror("Hibás sor");
         }
 

@@ -69,6 +69,7 @@ int picklift(utas temputas, elvono liftek[], utastomb szintek[][20]);
  * \param l Az adott lift
  * \param eredetiszintoszlop[] Az összes lift és azon belül az összes szinten várakozó emberek (két dimenziós) tömbje, erről készül a másolat
  * \return Az adott lifthez tartozó lépéssámmal térít vissza
+ * A lépésszám viszonylag időarányos
  */
 int megeri(utas temputas, elvono l, utastomb eredetiszintoszlop[]);
 
