@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
     utastomb szintek[LIFTCNT][SZINTCNT] = {0};
 
     // várólista fájlból
-    varolistaelem *varokeleje = fajlbol();
+    varolistaelem *varokeleje = fajlbol("erkezok.txt");
     // időzítő a következő váróig
     Uint32 varoktimer = 0;
 

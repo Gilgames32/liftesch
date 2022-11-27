@@ -219,8 +219,7 @@ void uiinit(button buttons[])
             buttons[index] = (button){
                 (SDL_Rect){PINX1 + PADDING + oszlop * (PADDING + CELLSIZE), PINY1 + PADDING + (sor + 1) * (PADDING + CELLSIZE), CELLSIZE, CELLSIZE},
                 0,
-                false,
-                NULL};
+                false};
             if (sor != 4)
             {
                 buttons[index].label = '1' + index;
@@ -259,7 +258,7 @@ void drawpin(SDL_Renderer *renderer, double scale, button buttons[], char panel[
 void drawpinaccent(SDL_Renderer *renderer, button buttons[], vector mouse, bool pressed)
 {
     int i = mat_buttoni(buttons, 12, mouse);
-    if (i == -1)
+    if (i == INVALID)
         return;
     SDL_Rect r = buttons[i].rect;
     rectangleStrokedColor(renderer, r.x, r.y, r.x + r.w, r.y + r.h, FEHER, 3);
@@ -325,7 +324,7 @@ int szintinput(SDL_Renderer *renderer, int from)
                 mousepressed = true;
                 // ha épp nyomunk valamire, kiemeljük
                 int pressedbutton = mat_buttoni(buttons, 12, mousepos);
-                if (pressedbutton != -1)
+                if (pressedbutton != INVALID)
                 {
                     buttons[pressedbutton].pressed = true;
                 }

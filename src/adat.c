@@ -1,17 +1,10 @@
 #include "adat.h"
 
-bool mat_inrange(int a, int b, int range)
-{
-    return range >= abs(a - b);
-}
-
-// egyszerű between függvény, a-c-b, egyenlőség meg van engedve mind2 oldalon
 bool mat_inbetween(int a, int b, int c)
 {
     return (a >= c && c >= b) || (b >= c && c >= a);
 }
 
-// megnézi hogy c b-n belül van-é
 bool mat_inbounds(SDL_Rect b, vector c)
 {
     return mat_inbetween(b.x, b.x + b.w, c.x) && mat_inbetween(b.y, b.y + b.h, c.y);
@@ -30,13 +23,12 @@ int mat_liftx(int lifti)
     return lifti * (512 / 4) + 128 + 32;
 }
 
-// -128 invalidot jelez (igen mert van -1. szint bruhhhh)
 int mat_szintbacktrack(vector mouse)
 {
     if (mat_inbetween(SCHX1 - MARGOX, SCHX1 + SCHW + MARGOX, mouse.x) && mat_inbetween(-1, 18, mat_szinti(mouse.y)))
         return mat_szinti(mouse.y);
     else
-        return -128;
+        return INVALID;
 }
 
 int mat_buttoni(button buttons[], int meret, vector mouse)
@@ -48,7 +40,7 @@ int mat_buttoni(button buttons[], int meret, vector mouse)
             return i;
         }
     }
-    return -1;
+    return INVALID;
 }
 
 void utastomb_append(utastomb *ul, utas ut)
@@ -115,15 +107,16 @@ void varolista_append(varolistaelem **eleje, varoutas add)
 
 void varolista_firstremove(varolistaelem **eleje)
 {
+    if (eleje == NULL) return; 
     varolistaelem *ujeleje = (*eleje)->kov;
     free(*eleje);
     *eleje = ujeleje;
 }
 
-varolistaelem *fajlbol(void)
+varolistaelem *fajlbol(char *fajlnev)
 {
     FILE *fp;
-    fp = fopen("erkezok.txt", "r");
+    fp = fopen(fajlnev, "r");
     if (fp != NULL)
     {
         varolistaelem *eleje = NULL;

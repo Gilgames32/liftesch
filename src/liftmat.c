@@ -66,8 +66,8 @@ bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint
 
         // ha pre de már a snapvonal után van, azaz elérte
         if (l->anim_pre &&
-            ((l->direction == +1 && l->pos.y <= mat_szinty(l->floor) - LOS) ||
-             (l->direction == -1 && l->pos.y >= mat_szinty(l->floor) - LOS)))
+            ((l->direction == +1 && l->pos.y <= mat_szinty(l->floor) + LOS) ||
+             (l->direction == -1 && l->pos.y >= mat_szinty(l->floor) + LOS)))
         {
             l->anim_pre = false;
 
@@ -75,7 +75,7 @@ bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint
             if (l->todo_to[l->floor + 1] || (l->inside.meret < l->maxppl && l->todo_from[l->floor + 1]))
             {
                 // megláll és snap
-                l->pos.y = mat_szinty(l->floor) - LOS;
+                l->pos.y = mat_szinty(l->floor) + LOS;
                 l->anim_y = (double)l->pos.y;
                 l->state = LIFTBOARDING;
                 break;

@@ -52,7 +52,7 @@ bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint
  * \param temputas Az érkező és már ismert célállomású utas
  * \param liftek[] Az összes liftet tartalmazó tömb
  * \param szintek[][] Az összes lift és azon belül az összes szinten várakozó emberek (két dimenziós) tömbje
- * \return A legkevesebb lépés alatt ideérő lift indexével tér vissza, ahol A = 0
+ * \return A legkevesebb lépés alatt ideérő lift indexével tér vissza (A = 0)
  */
 int picklift(utas temputas, elvono liftek[], utastomb szintek[][20]);
 
