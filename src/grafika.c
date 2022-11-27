@@ -151,9 +151,10 @@ void drawlift(SDL_Renderer *renderer, elvono lift, SDL_Texture *nyiltexture)
     liftbox.rect.y -= liftbox.rect.h / 2;
     drawbox(renderer, liftbox);
     lineColor(renderer, liftbox.rect.x + liftbox.rect.w / 2, liftbox.rect.y, liftbox.rect.x + liftbox.rect.w / 2, SCHY1, FEHER25);
+    // bentlévők száma
     char tmpstr[2+1]; // 2 char + '\0'
     sprintf(tmpstr, "%2d", lift.inside.meret);
-    stringColor(renderer, liftbox.rect.x + 2, liftbox.rect.y + 2, tmpstr, lift.state == LIFTBOARDING ? FEHER : FEKETE);
+    stringColor(renderer, liftbox.rect.x + 8, liftbox.rect.y + 8, tmpstr, lift.state == LIFTBOARDING ? FEHER : FEKETE);
 
     if (lift.state == LIFTBOARDING)
     {
