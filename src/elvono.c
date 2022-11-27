@@ -16,33 +16,31 @@
 int main(int argc, char *argv[])
 {
 
-    // init
+    // inicializálás
     SDL_Window *window;
     SDL_Renderer *renderer;
     Mix_Music *music;
     ablak_init(WINX, WINY, &window, &renderer, &music);
     ablak_cls(renderer);
 
-    // control music
+    // argumentum alapján zene némítás
     Mix_PlayMusic(music, -1);
     for (int i = 0; i < argc; i++)
         if (strcmp(argv[i], "mutemusic") == 0)
             Mix_HaltMusic();
 
-
-    // load textures
+    // textúrák betöltése
     SDL_Texture *nyiltexture = ablak_loadtexture(renderer, "nyil.png");
     SDL_Texture *embertexture = ablak_loadtexture(renderer, "nber.png");
     SDL_Texture *titletexture = ablak_loadtexture(renderer, "lifteschtitle.png");
 
-    // ui components
+    // fogd és vidd emberke hitbox
     SDL_Rect emberrect = {DNBX, DNBY, NBERX, NBERY};
-    // button loadbutton = {(SDL_Rect){LDBTNX, LDBTNY, CELLSIZE, CELLSIZE}};
 
-    // stats
+    // statisztikák
     avg waittime = {}, traveltime = {};
 
-    // liftek init
+    // liftek inicializálása
     elvono liftek[LIFTCNT] = {0};
     for (int i = 0; i < LIFTCNT; i++)
     {
@@ -51,27 +49,27 @@ int main(int argc, char *argv[])
         l->maxppl = i < 2 ? 13 : 21; // A és B liftek 13 fősek, C és D 21
 
         l->floor = 0;
-        // todo empty
         l->state = LIFTIDLE;
         l->direction = 0;
 
-        // inside empty
-
-        l->pos = (vector){mat_liftx(i), mat_szinty(l->floor) - SCHSZINT/2};
+        l->pos = (vector){mat_liftx(i), mat_szinty(l->floor) - SCHSZINT / 2};
         l->anim_y = (double)l->pos.y;
         l->anim_board = 0;
         l->anim_flip = false;
     }
 
-    // szintek liftajtó : szint, A = 0
-    // követelmény miatt kettős indirekcijó :|
+    // szintek, [liftajtó][szint], A = 0
     utastomb szintek[LIFTCNT][SZINTCNT] = {0};
 
     // várólista fájlból
     varolistaelem *varokeleje = fajlbol();
+    // időzítő a következő váróig
     Uint32 varoktimer = 0;
 
+    // deltatime és segédváltozók az egységes animácósebességért, frissítésgyakoriságtól független
     Uint32 prev = SDL_GetTicks(), curr = SDL_GetTicks(), deltatime = 0, localtime = 0;
+
+    // main event és segédváltozók
     SDL_Event event;
     bool update = true;
     vector mousepos = {0, 0};
@@ -80,29 +78,32 @@ int main(int argc, char *argv[])
     bool quit = false;
     while (!quit)
     {
-        // processing events
+        // minden event feldolgozása
         while (SDL_PollEvent(&event))
         {
             switch (event.type)
             {
             case SDL_MOUSEBUTTONDOWN:
+                // emberre kattintáskor elkezdjük húzni
                 if (mat_inbounds(emberrect, mousepos))
                 {
                     drag = true;
+                    update = true;
                 }
-                update = true;
                 break;
 
             case SDL_MOUSEBUTTONUP:
+                // ha volt a kezünkben ember
                 if (drag)
                 {
+                    // érvényes szintre rakáskor
                     int szinti = mat_szintbacktrack(mousepos);
                     if (szinti != INVALID)
                     {
-                        // initialize new utas
+                        // új utas bekészítése
                         utas temputas = {szinti, INVALID, 0, -1, -1};
                         int toszint = szintinput(renderer, temputas.from);
-                        // ha panel közben kapunk exit kódot
+                        // ha panel közben akarjuk bezárni az ablakot
                         if (toszint == INVALID)
                         {
                             quit = true;
@@ -110,15 +111,14 @@ int main(int argc, char *argv[])
                         }
                         temputas.to = toszint;
                         temputas.dir = temputas.to > temputas.from ? 1 : -1;
-                        // timer for stats
                         temputas.waiting = localtime;
 
-                        // add utas to lift
+                        // kedvező lift kiválasztása
                         int pickedlift = picklift(temputas, liftek, szintek);
                         utastomb_append(&(szintek[pickedlift][temputas.from + 1]), temputas);
                         liftek[pickedlift].todo_from[temputas.from + 1] = true;
 
-                        // reset deltatime
+                        // deltatime visszaállítása, hogy ne ugorjon a befagyás után
                         deltatime = 0;
                         curr = prev;
                     }
@@ -140,40 +140,42 @@ int main(int argc, char *argv[])
             }
         }
 
-        // calc deltatime
+        // deltatime kiszámítása
         curr = SDL_GetTicks();
         deltatime = curr - prev;
         prev = curr;
-        // 40 fps alatt belassul a program, így nem skippel szinteket
+        // 25 fps = 40 ms alatt belassul a program, így nem skippel szinteket
         if (deltatime > 40)
             deltatime = 40;
         localtime += deltatime;
 
-        // várólista management
+        // várólista feldolgozás
         if (varokeleje != NULL)
         {
-            update = true;
+            // idő számolás
             varoktimer += deltatime;
+            // ha lejárt
             if (varoktimer >= varokeleje->adat.varoido)
             {
-                // be a szintre
-                // todo: implement the liftpick here too
+                // várólistáról a szintre
                 utas temputas = varokeleje->adat.varo;
                 temputas.waiting = localtime;
                 int pickedlift = picklift(temputas, liftek, szintek);
                 utastomb_append(&(szintek[pickedlift][temputas.from + 1]), temputas);
                 liftek[pickedlift].todo_from[temputas.from + 1] = true;
 
+                // időzítő visszaállítása
                 varoktimer -= varokeleje->adat.varoido;
                 varolista_firstremove(&varokeleje);
+
+                update = true;
             }
         }
 
-        // apply movement and render
+        // liftműveletek kiszámítása és grafika renderelés
         if (update)
         {
             update = false;
-            // render
             ablak_cls(renderer);
 
             // liftek
@@ -192,24 +194,24 @@ int main(int argc, char *argv[])
             // váró emberek
             drawwaitingppl(renderer, embertexture, szintek);
 
-            // ha húz egy embert akkor a megfelelő szintet kiemeli
+            // ha húzunk egy embert akkor a megfelelő szintet kiemeli
             if (drag)
                 drawszintaccent(renderer, mousepos);
 
-            // dragndrop ember
+            // fogd és vidd ember, húzás szerint
             drawnber(renderer, embertexture, drag ? (vector){mousepos.x - NBERX / 2, mousepos.y - NBERY / 3} : (vector){emberrect.x, emberrect.y});
 
-            // stats
+            // statisztikák
             drawstats(renderer, waittime, traveltime);
 
-            // apply
+            // képernyő lefrissítése
             SDL_RenderPresent(renderer);
         }
     }
 
     // felszabadítások és bezárás
 
-    // sdl cleanup
+    // sdl felszabadítások
     SDL_DestroyTexture(embertexture);
     SDL_DestroyTexture(nyiltexture);
     SDL_DestroyTexture(titletexture);
@@ -226,17 +228,17 @@ int main(int argc, char *argv[])
     // utastömbök felszabadítása
     for (int i = 0; i < LIFTCNT; i++)
     {
-        // liftek
+        // liftekben
         free(liftek[i].inside.utasok);
 
-        // szintoszlopok
+        // szintoszlopokban
         for (int j = 0; j < SZINTCNT; j++)
         {
             free(szintek[i][j].utasok);
         }
     }
 
-    // maradék várólista
+    // maradék várólista felszabadítása
     varolista_free(&varokeleje);
 
     return 0;

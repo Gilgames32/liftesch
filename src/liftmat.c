@@ -225,8 +225,9 @@ int megeri(utas temputas, elvono l, utastomb eredetiszintoszlop[]){
         // ha nem
             // a végén jöjjön értem
 
-    // 1 beszálló: 3*nyilx*banim
-    // 1 szint = schszint*lanim
+    // 1 beszálló: 3*nyilx*banim lépés
+    // 1 szint = schszint*lanim lépés
+    // nagyjából időarányos
 
     // klónozás: liftinside és szintoszlop dinamikus ezért klónozzuk hogy ne csessze szét a többit
     l.inside = utastomb_clone(l.inside);
