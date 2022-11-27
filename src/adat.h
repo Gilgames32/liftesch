@@ -1,6 +1,13 @@
 /**
+ * \mainpage
+ * 
+ * ##Builelés és futtatás##
+ * A futtatható fájl elkészítéséhez szükséges egy külső könyvár, az SDL, \n
+ * továbbá fontos, hogy a szöveges fájl, a texturák és a zene a futattható fájllal megegyező mappában legyen.
+ *
  * \file adat.h
  * \brief A struktúrákért, tömbökért és listákért felelős modul
+ * 
  * Több modul által használt matematikai függvények is helyet kapnak továbbá benne
 */
 
@@ -96,7 +103,6 @@ enum ui_pin_const
 
 /**
  * \brief Időátlag számolásához használt struktúra
- * Megspórolhatunk egy listát
  * \param sum Az idők összege
  * \param cnt A hányados
 */
@@ -154,10 +160,7 @@ typedef struct varolistaelem
 } varolistaelem;
 
 /**
- * \brief Egy helyvektor struktúrálya
- * Érdemes megjegyezni hogy a matematikában használt Descartes-féle koordináta rendszertől eltérő módon működik egy pixelrács
- * \param x Vízszintes koordináta
- * \param y Függőleges koordináta
+ * \brief Egy helyvektor struktúrája, magáért beszél
 */
 typedef struct vector
 {
@@ -237,7 +240,7 @@ typedef struct button
 } button;
 
 /**
- * \brief Megadja, hogy c benne van-e [a;b] intervallumban
+ * \brief Megadja, hogy c benne van-e [a;b] intervallumban, \n
  * a és b sorrendje indifferens
  * \return Igazat ad, ha a feltétel teljesül
 */
@@ -290,7 +293,9 @@ int mat_buttoni(button buttons[], int meret, vector mouse);
 
 /**
  * \brief Egy dinamikusan foglalt tömb végére tesz egy utast
+ * 
  * A tömb használat utáni felszabadítása a programozó feladata
+ * 
  * \param ul* A tömbstruktúrára mutató pointer
  * \param ut A hozzáadandó utas
 */
@@ -305,7 +310,9 @@ void utastomb_indexremove(utastomb *ul, int index);
 
 /**
  * \brief Lemásol egy utasokból álló tömböt
+ * 
  * A tömb használat utáni felszabadítása a programozó feladata
+ * 
  * \param ul Az eredeti tömbstruktúra
  * \return A tömbstruktúra másolata
 */
@@ -314,29 +321,31 @@ utastomb utastomb_clone(utastomb ul);
 /**
  * \brief Felszabadítja a használt láncolt listát
  * \param eleje** Az első elemre mutató mutató pointere
- * A függvény az eleje pointert futásának végén NULL-ra állítja vissza
+ * \brief A függvény az eleje pointert futásának végén NULL-ra állítja vissza 
 */
 void varolista_free(varolistaelem **eleje);
 
 /**
  * \brief Hozzáfűz egy elemet a használt láncolt lista végéhez
  * \param eleje** Az első elemre mutató mutató pointere
- * A függvény üres lista esetén képes felülírni az eleje pointert
+ * \brief A függvény üres lista esetén képes felülírni az eleje pointert
 */
 void varolista_append(varolistaelem **eleje, varoutas add);
 
 /**
  * \brief Töröl egy elemet a használt láncolt lista elejéről
  * \param eleje** Az első elemre mutató mutató pointere
- * A függvény megváltoztatja az eleje pointert, amennyiben az nem NULL
+ * \brief A függvény megváltoztatja az eleje pointert, amennyiben az nem NULL
 */
 void varolista_firstremove(varolistaelem **eleje);
 
 /**
  * \brief Beolvas egy szöveges fájlt, és egy láncolt listát készít belőle
- * A fájlban az adatokat
- * <várt idő az előző ember után [ms]> <indulási szint> <érkezési szint> 
- * formátumban kell megadni (<> karakterek nélkül)
+ * 
+ * A fájlban az adatokat az alábbi formátum szerint kell megadni (<> karakterek nélkül):
+ * 
+ *      <várt idő az előző ember után [ms]> <indulási szint> <érkezési szint>
+ * 
  * \param fajlnev* A fájl nevét tartalmazó string
  * \return Az első listaelem címével tér vissza
 */

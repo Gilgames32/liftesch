@@ -1,6 +1,7 @@
 /**
  * \file grafika.h
  * \brief Grafikai elemekért és megjelenítésükért felelős modul
+ * 
  * Itt található minden grafikai függvény, az ablak és a grafikus bemenetek kezelsése
 */
 
@@ -21,8 +22,9 @@
 void ablak_cls(SDL_Renderer *renderer);
 
 /**
- * \brief Inicializál és létrehoz egy SDL ablakot
- * Továbba betölti a zenét és beállítja az ikont
+ * \brief Inicializál és létrehoz egy SDL ablakot, \n
+ * továbba betölti a zenét és beállítja az ikont
+ * 
  * A zene, a renderer és az ablak "megsemmisítése" a programozó feladata
  * \param szeles Az ablak szélessége
  * \param magas Az ablak magassága
@@ -34,6 +36,7 @@ void ablak_init(int szeles, int magas, SDL_Window **pwindow, SDL_Renderer **pren
 
 /**
  * \brief Fájlnév alapján betölt egy textúrát
+ * 
  * A textúra használat utáni felszabadítása a programozó feladata
  * \param renderer* A renderer mutatója
  * \param fliename[] A betöltendő fájl neve
@@ -51,6 +54,7 @@ void rectangleStrokedColor(SDL_Renderer *renderer, Sint16 x1, Sint16 y1, Sint16 
 
 /**
  * \brief Egy dobozt rajzol rajzol a rendererre
+ * 
  * Az SDL-es rectangleColor függvénytől eltérően, bal felső sarok, szélesség és magasság alapján rajzol
  * \param renderer* A renderer mutatója
  * \param b A rajzolandó doboz
@@ -76,9 +80,11 @@ void drawnyil(SDL_Renderer *renderer, SDL_Texture *nyiltexture, int x, vector po
 
 /**
  * \brief Egy liftet és egy hozzá tartozó "kötelet" rajzol
+ * 
  * Adott esetben a liftbe épp be vagy ki szállókhoz tartozó nyíl rajzolásának függvényének hívását is intézi
- * A a kirjazolás viszonyítási pontja, azaz a horgony, a lift közepén van
- * A liftekre rákerül a bent tartózkodó utasok száma
+ * 
+ * A a kirjazolás viszonyítási pontja, azaz a horgony, a lift közepén van, \n
+ * a liftekre rákerül a bent tartózkodó utasok száma
  * \param renderer* A renderer mutatója
  * \param lift A kirajzolandó lift struktúra
  * \param nyiltexture* A nyíl textúrája
@@ -94,6 +100,7 @@ void drawszintaccent(SDL_Renderer *renderer, vector mouse);
 
 /**
  * \brief Egy embert rajzol
+ * 
  * A horgony a bal felső sarokban van
  * \param renderer* A renderer mutatója
  * \param embertexture* Az ember textúra
@@ -103,6 +110,7 @@ void drawnber(SDL_Renderer *renderer, SDL_Texture *embertexture, vector pos);
 
 /**
  * \brief Minden szinten és minden liftnél váró embertömeget kirajzol
+ * 
  * Amennyiben túllógnának, egy szám jelenik meg, de ez nem lehet 4-nél több számjegyű
  * \param renderer* A renderer mutatója
  * \param embertexture* Az ember textúra
@@ -112,6 +120,7 @@ void drawwaitingppl(SDL_Renderer *renderer, SDL_Texture *embertexture, utastomb 
 
 /**
  * \brief Kiírja (rajzolja) a képernyőre a várakozási és utazási satisztikákat
+ * 
  * Legfeljebb 5 számot (4 számot a tizedesvessző előtt és egyet utána) képes kiírni
  * \param renderer* A renderer mutatója
  * \param waitt A várakozási idő átlag struktúrája
@@ -120,8 +129,8 @@ void drawwaitingppl(SDL_Renderer *renderer, SDL_Texture *embertexture, utastomb 
 void drawstats(SDL_Renderer *renderer, avg waitt, avg travelt);
 
 /**
- * \brief Előkészíti a szintválasztó felület gombjait
- * Beállítja a gombok feliratát, pozícióját
+ * \brief Előkészíti a szintválasztó felület gombjait, \n
+ * beállítja a gombok feliratát, pozícióját
  * \param buttons[] A gombok tömbje
  */
 void uiinit(button buttons[]);
@@ -147,17 +156,18 @@ void drawpinaccent(SDL_Renderer *renderer, button buttons[], vector mouse, bool 
 
 /**
  * \brief Törli a képernyő azon részét ahol a szintválasztó billentyűzet volt/van
- * A képernyő többi részét békénhagyja
  * \param renderer* A renderer mutatója
  */
 void clearpinpad(SDL_Renderer *renderer);
 
 /**
  * \brief A szintválasztás bemenetét és animációját kezeli
+ * 
  * Először lefut a megjelenítés animációja (fentről le)
  * A program többi része függvény futásának idejére megáll
  * Addig fut amíg nincs érvényesen megadott szint, vagy be nem zárjuk az ablakot
  * Legvégül lefut az eltűnés animációja (lentről fel)
+ * 
  * \param renderer* A renderer mutatója
  * \return Ha szintválasztás közben próbáljuk bezárni az ablakot, akkor INVALID jelzéssel tér vissza
  * Ellenkező esetben a kiválasztott célállomást kapjuk meg

@@ -93,7 +93,7 @@ void drawbox(SDL_Renderer *renderer, box b)
 void drawschonherz(SDL_Renderer *renderer, SDL_Texture *title)
 {
     // padlók
-    for (int i = -1; i <= 18; i++)
+    for (int i = SCHMIN; i <= SCHMAX; i++)
     {
         // fekete körvonalas csíkok
         boxColor(renderer, SCHX1 - MARGOY, mat_szinty(i) - MARGOY, SCHX2 + MARGOY, mat_szinty(i) + MARGOY, FEKETE);
@@ -103,6 +103,12 @@ void drawschonherz(SDL_Renderer *renderer, SDL_Texture *title)
         sprintf(tmpstr, "%2d", i);
         stringColor(renderer, SCHX2 + 4, mat_szinty(i) - 16, tmpstr, FEHER);
     }
+
+    for (int i = 0; i < LIFTCNT; i++)
+    {
+        characterColor(renderer, mat_liftx(i)-3, SCHY1 + MARGOX, 'A'+i, FEHER);
+    }
+    
 
     // díszítés: - | / |
     //jobb
