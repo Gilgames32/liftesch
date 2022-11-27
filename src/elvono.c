@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
 
 #include <SDL.h>
 #include <SDL2_gfxPrimitives.h>
@@ -22,7 +23,12 @@ int main(int argc, char *argv[])
     ablak_init(WINX, WINY, &window, &renderer, &music);
     ablak_cls(renderer);
 
-    Mix_PlayMusic(music, -1); // music turned off for debug now
+    // control music
+    Mix_PlayMusic(music, -1);
+    for (int i = 0; i < argc; i++)
+        if (strcmp(argv[i], "mutemusic") == 0)
+            Mix_HaltMusic();
+
 
     // load textures
     SDL_Texture *nyiltexture = ablak_loadtexture(renderer, "nyil.png");
@@ -37,8 +43,8 @@ int main(int argc, char *argv[])
     avg waittime = {}, traveltime = {};
 
     // liftek init
-    elvono liftek[4] = {0};
-    for (int i = 0; i < 4; i++)
+    elvono liftek[LIFTCNT] = {0};
+    for (int i = 0; i < LIFTCNT; i++)
     {
         elvono *l = liftek + i;
         l->id = 'A' + i;
@@ -51,14 +57,15 @@ int main(int argc, char *argv[])
 
         // inside empty
 
-        l->pos = (vector){mat_liftx(i), mat_szinty(l->floor) - 16};
+        l->pos = (vector){mat_liftx(i), mat_szinty(l->floor) - SCHSZINT/2};
         l->anim_y = (double)l->pos.y;
         l->anim_board = 0;
         l->anim_flip = false;
     }
 
     // szintek liftajtó : szint, A = 0
-    utastomb szintek[4][20] = {0};
+    // követelmény miatt kettős indirekcijó :|
+    utastomb szintek[LIFTCNT][SZINTCNT] = {0};
 
     // várólista fájlból
     varolistaelem *varokeleje = fajlbol();
@@ -90,13 +97,13 @@ int main(int argc, char *argv[])
                 if (drag)
                 {
                     int szinti = mat_szintbacktrack(mousepos);
-                    if (szinti != -128)
+                    if (szinti != INVALID)
                     {
                         // initialize new utas
-                        utas temputas = {szinti, -128, 0, -1, -1};
+                        utas temputas = {szinti, INVALID, 0, -1, -1};
                         int toszint = szintinput(renderer, temputas.from);
                         // ha panel közben kapunk exit kódot
-                        if (toszint == -128)
+                        if (toszint == INVALID)
                         {
                             quit = true;
                             break;
@@ -170,7 +177,7 @@ int main(int argc, char *argv[])
             ablak_cls(renderer);
 
             // liftek
-            for (int lifti = 0; lifti < 4; lifti++)
+            for (int lifti = 0; lifti < LIFTCNT; lifti++)
             {
                 elvono *l = liftek + lifti;
                 if (updatelift(renderer, deltatime, l, szintek[lifti], localtime, &waittime, &traveltime))
@@ -200,6 +207,8 @@ int main(int argc, char *argv[])
         }
     }
 
+    // felszabadítások és bezárás
+
     // sdl cleanup
     SDL_DestroyTexture(embertexture);
     SDL_DestroyTexture(nyiltexture);
@@ -214,19 +223,17 @@ int main(int argc, char *argv[])
     SDL_DestroyWindow(window);
     SDL_Quit();
 
-    // szintek
-    for (int i = 0; i < 4; i++)
+    // utastömbök felszabadítása
+    for (int i = 0; i < LIFTCNT; i++)
     {
-        for (int j = 0; j < 20; j++)
+        // liftek
+        free(liftek[i].inside.utasok);
+
+        // szintoszlopok
+        for (int j = 0; j < SZINTCNT; j++)
         {
             free(szintek[i][j].utasok);
         }
-    }
-
-    // liftek
-    for (int i = 0; i < 4; i++)
-    {
-        free(liftek[i].inside.utasok);
     }
 
     // maradék várólista

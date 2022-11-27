@@ -14,7 +14,8 @@ enum ablak_const
     FEHER = 0xFFFFFFFF,
     FEKETE = 0x000000FF,
     FEHER50 = 0xFFFFFF88,
-    FEHER25 = 0xFFFFFF44
+    FEHER25 = 0xFFFFFF44,
+    INVALID = -128
 };
 
 enum img_const
@@ -31,6 +32,8 @@ enum img_const
 
 enum sch_const
 {
+    SZINTCNT = 20,
+    LIFTCNT = 4,
     MARGOX = 24,
     MARGOY = 2,
     SCHX1 = 128,
@@ -76,7 +79,8 @@ enum ui_pin_const
 
 typedef struct avg
 {
-    int avgerage, cnt;
+    Uint32 sum;
+    int cnt;
 } avg;
 
 typedef struct utas

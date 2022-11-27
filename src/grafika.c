@@ -160,7 +160,7 @@ void drawlift(SDL_Renderer *renderer, elvono lift, SDL_Texture *nyiltexture)
 void drawszintaccent(SDL_Renderer *renderer, vector mouse)
 {
     int szinti = mat_szintbacktrack(mouse);
-    if (szinti != -128)
+    if (szinti != INVALID)
     {
         int szinty = mat_szinty(szinti);
         rectangleStrokedColor(renderer, SCHX1, szinty, SCHX1 + SCHW, szinty - 32, FEHER, 3);
@@ -202,9 +202,11 @@ void drawwaitingppl(SDL_Renderer *renderer, SDL_Texture *embertexture, utastomb 
 void drawstats(SDL_Renderer *renderer, avg waitt, avg travelt)
 {
     char tmpstr[4+2+4+1+1]; // VARO + :_ + __._s + \0
-    sprintf(tmpstr, "VARO: %4.1fs", (double)waitt.avgerage/1000);
+
+    sprintf(tmpstr, "VARO: %4.1fs", waitt.cnt == 0 ? 0.0 : (double)waitt.sum/waitt.cnt/1000);
     stringColor(renderer, STATX, STATY, tmpstr, FEHER);
-    sprintf(tmpstr, "UTAZ: %4.1fs", (double)travelt.avgerage/1000);
+
+    sprintf(tmpstr, "UTAZ: %4.1fs", travelt.cnt == 0 ? 0.0 : (double)travelt.sum/travelt.cnt/1000);
     stringColor(renderer, STATX, STATY+(int)(1.5*PADDING), tmpstr, FEHER);
 }
 
@@ -300,7 +302,7 @@ int szintinput(SDL_Renderer *renderer, int from)
     bool update = true;
     vector mousepos = {0, 0};
     bool mousepressed = false;
-    int result = -128;
+    int result = INVALID;
 
     // input bar
     bool freezetimer = true;
@@ -377,7 +379,7 @@ int szintinput(SDL_Renderer *renderer, int from)
                 break;
 
             case SDL_QUIT:
-                return -128;
+                return INVALID;
                 break;
             default:
                 break;

@@ -7,7 +7,7 @@ int todo_min(bool todo_to[], bool todo_from[], bool fisrtonly)
         if (todo_to[i] || (todo_from[i] && !fisrtonly))
             return i;
 
-    return -128;
+    return INVALID;
 }
 
 // indexként térít vissza, nem szintként!
@@ -17,7 +17,7 @@ int todo_max(bool todo_to[], bool todo_from[], bool fisrtonly)
         if (todo_to[i] || (todo_from[i] && !fisrtonly))
             return i;
 
-    return -128;
+    return INVALID;
 }
 
 bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szintoszlop[], Uint32 localtime, avg *waitt, avg *travelt)
@@ -130,9 +130,9 @@ bool updatelift(SDL_Renderer *renderer, int deltatime, elvono *l, utastomb szint
                     if (l->inside.utasok[i].to == l->floor)
                     {
                         // calc stats
-                        waitt->avgerage = (waitt->cnt*waitt->avgerage + l->inside.utasok[i].waiting) / (waitt->cnt+1);
+                        waitt->sum += localtime - l->inside.utasok[i].waiting;
                         waitt->cnt++;
-                        travelt->avgerage = (travelt->cnt*travelt->avgerage + l->inside.utasok[i].traveling) / (travelt->cnt+1);
+                        travelt->sum += localtime - l->inside.utasok[i].traveling;
                         travelt->cnt++;
                         utastomb_indexremove(&(l->inside), i);
 
