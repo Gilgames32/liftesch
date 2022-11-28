@@ -1,9 +1,0 @@
-statisztikák számítása
-    heatmap?
-
-
----ideas---
-hibakezelés 
-    mi van ha minden lift megtelt?
-time pause
-consolas font
