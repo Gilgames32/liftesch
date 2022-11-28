@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/output/liftesch.exe",
-            "args": ["mutemusic"],
+            "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/output",
             "environment": [],
