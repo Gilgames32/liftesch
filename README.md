@@ -1,4 +1,4 @@
-# liftesch
+# LifteSCH
 
 Ez a program egy szimulációja a Schönherz Kollégium liftrendszerének.
 
