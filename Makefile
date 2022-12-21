@@ -2,7 +2,7 @@ CC := gcc
 SRCDIR := src
 OBJDIR := obj
 TARGET := output
-CFLAGS := -Wall
+CFLAGS := -Wall -std=c99
 LIB := -lSDL2_gfx -lSDL2_image -lSDL2_mixer -lSDL2_ttf
 OBJECTS := adat.o liftmat.o grafika.o elvono.o
 
