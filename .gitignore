@@ -54,3 +54,7 @@ dkms.conf
 # Generated docs
 /docs/html/
 /docs/latex/
+
+# project files
+*.psd
+*.docx

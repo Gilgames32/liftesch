@@ -106,7 +106,7 @@ void drawschonherz(SDL_Renderer *renderer, SDL_Texture *title)
 
     for (int i = 0; i < LIFTCNT; i++)
     {
-        characterColor(renderer, mat_liftx(i)-3, SCHY1 + MARGOX, 'A'+i, FEHER);
+        characterColor(renderer, mat_liftx(i)-3, SCHY1 + 2*MARGOY, 'A'+i, FEHER);
     }
     
 
