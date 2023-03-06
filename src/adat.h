@@ -30,8 +30,8 @@ enum ablak_const
     WINY = 720,             /**< Az ablak magassága*/
     FEHER = 0xFFFFFFFF,     /**< A fehér szín hexadecimális kódja*/
     FEKETE = 0x000000FF,    /**< A fekete szín hexadecimális kódja*/
-    FEHER50 = 0xFFFFFF88,   /**< A fehér szín félgi áttetsző hexadecimális kódja*/
-    FEHER25 = 0xFFFFFF44,   /**< A fehér szín 75%-ban áttetsző hexadecimális kódja*/
+    FEHER50 = 0x888888FF,   /**< A fehér szín félgi áttetsző hexadecimális kódja*/
+    FEHER25 = 0x444444FF,   /**< A fehér szín 75%-ban áttetsző hexadecimális kódja*/
     INVALID = -128          /**< Az INVALID jel értéke*/
 };
 
